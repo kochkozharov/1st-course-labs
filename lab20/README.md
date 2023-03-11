@@ -606,18 +606,12 @@ arch.tar  f  f1  f2  f3  s.sh  script.py  test
 ```
 
 ### tr
-_копирует стандартный входной поток в стандартный выходной, подставляя или удаляя некоторые символы ([:lower:] - строка строчных букв, [:upper:] - строка заглавных букв, [:alpha:] - строка букв алфавита, [\n*] - строка из \n)_
+_копирует стандартный входной поток в стандартный выходной, подставляя или удаляя некоторые символы ([:lower:] - строка из всех строчных букв, [:upper:] - стркоа всех заглавных букв, [:digits:] - строка из всех цифр, -d  удаление символов, указанных в наборе)_
 ```
 ivan@asus-vivobook ~/tests $ echo "feh" | tr "[:lower:]" "[:upper:]"
 FEH
-ivan@asus-vivobook ~/tests $ echo "dfas,fmvlasmk nasdf asaf awe,f wej" | tr -cs "[:alpha:]" "[\n*]"
-dfas
-fmvlasmk
-nasdf
-asaf
-awe
-f
-wej
+ivan@asus-vivobook ~/tests $ $ echo "1 please 2 remove 3 all 4 digits" | tr -d [:digit:]
+please remove all digits
 ```
 
 ### cmp
