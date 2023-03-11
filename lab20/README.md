@@ -121,7 +121,7 @@ _выборка отдельных полей из строк файла (таб
 ### *3 основные утилиты:*
 ### tar
 
-Изначальное состояние папки ~/test:
+Изначальное состояние папки ~/tests:
 ```
 ivan@asus-vivobook ~/tests $ tree
 .
@@ -291,9 +291,9 @@ ivan@asus-vivobook ~/tests $ find ~ -type f -not -path '*/.*/*' -a -not -path '*
 /home/ivan/wallpapers/gentoo-cow-gdm-remake-1920x1080.png
 /home/ivan/.fehbg
 ```
-Перечислить файлы, измененный в последние два дня в домашнем каталоге, исключив из поиска некоторые каталоги. -mtime - время последнего изменения файла (в днях).
+Перечислить файлы, измененные в последние два дня в домашнем каталоге, исключив из поиска некоторые каталоги. -mtime - время последнего изменения файла (в днях).
 ```
-ivan@asus-vivobook ~/tests $ find ~ -type f ! -path '*/.*/*' -a ! -path '*/Downloads/Telegram Desktop/*' -a -mtime -2
+ivan@asus-vivobook ~/tests $ find ~ -type f -not -path '*/.*/*' -a -not -path '*/Downloads/Telegram Desktop/*' -a -mtime -2
 /home/ivan/.bash_history
 /home/ivan/Downloads/000077699_ПриказОЗачисленииПереводом_186471.pdf
 /home/ivan/bak/package.use/vlc
