@@ -724,6 +724,15 @@ ivan@asus-vivobook ~/tests $ diff -u f1 f2
 _перенос правок (изменений) между разными версиями текстовых файлов, информация о правке обычно содержится в отдельном patch-файле_
 ```
 ivan@asus-vivobook ~/tests $ diff -u f1 f2 > patch.diff
+ivan@asus-vivobook ~/tests $ cat patch.diff
+--- f1	2007-01-31 08:46:26.000000000 +0300
++++ f2	2023-03-11 02:02:59.223225768 +0300
+@@ -1,4 +1,4 @@
+ df, fads
+-edhrsheatrjyjktykt arg  kty kteyk tydjdtr jsrtjwrsthaer e  eraerga ga s
++edhrsheatrjyjktykt arg  kty kteyk tydjdtr jsrtjwrsthaer e  eraerga Dga s
+ asdf
+ asdg arg
 ivan@asus-vivobook ~/tests $ patch < patch.diff
 patching file f1
 ivan@asus-vivobook ~/tests $ cmp f1 f2
