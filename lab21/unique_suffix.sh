@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 DIR=${1:-'.'}
-HELP='unque_suffix.sh finds and counts all of the distinct file suffixes in a folder recursively. Default folder is a current folder.'
+HELP='unique_suffix.sh [DIR] finds and counts all of the distinct file suffixes in a [DIR] recursively. Default [DIR] is a current directory.'
 case "$1" in
     -h) echo $HELP;;
     --help) echo $HELP;;
