@@ -17,27 +17,26 @@ typedef struct {
 } Deque;
 
 typedef struct {
-    Deque* d;
+    const Deque* d;
     int index;
-} deque_iterator;
+} _deque_iterator;
 
 void deque_create(Deque*);
 bool deque_is_empty(const Deque*);
 bool deque_is_full(const Deque*);
-bool deque_push_front(Deque*, const T);
-bool deque_push_back(Deque*, const T);
-bool deque_pop_front(Deque*);
-bool deque_pop_back(Deque*);
+int deque_push_front(Deque*, const T);
+int deque_push_back(Deque*, const T);
+int deque_pop_front(Deque*);
+int deque_pop_back(Deque*);
 int deque_front(const Deque*, T*);
 int deque_back(const Deque*, T*);
-void deque_print(const Deque*);
 size_t deque_size(const Deque*);
 void deque_clear(Deque*);
 
-deque_iterator fisrt(const Deque*);
-deque_iterator last(const Deque*);
-deque_iterator next(deque_iterator*);
-deque_iterator prev(deque_iterator*);
-T fetch(const deque_iterator*) ;
+_deque_iterator first(const Deque*);
+_deque_iterator last(const Deque*);
+void next(_deque_iterator*);
+void prev(_deque_iterator*);
+int fetch(const _deque_iterator*, T*);
 
-#endif
+#endif //_DEQUE_H_
