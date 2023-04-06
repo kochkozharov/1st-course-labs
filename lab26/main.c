@@ -10,16 +10,15 @@ int main(void){
     deque_push_back(&a, 7);
 
     deque_push_front(&a, -1);
-    deque_pop_front(&a);
-
+    deque_push_front(&a, -1);
+    deque_push_back(&a, 7);
+    deque_pop_back(&a);
 
     _deque_iterator i = first(&a);
     while (i.index != -1) {
         T v;
-        printf("%d\n",i.index); 
         fetch(&i, &v);
         next(&i);
-       // printf("%d\n", i.d->first);
         printf("%d\n",v);
         
     }
