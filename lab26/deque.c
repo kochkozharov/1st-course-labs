@@ -1,3 +1,5 @@
+#include <errno.h>
+
 #include "deque.h"
 
 void deque_create(Deque* const d) {
@@ -32,7 +34,7 @@ bool deque_push_front(Deque* const d, const T t) {
         d->data[d->first]=t;
     }
     else {
-        d->data[--(d->first)];
+        d->data[--(d->first)]=t;
     }
     return true;
 }
@@ -50,30 +52,53 @@ bool deque_push_back(Deque* const d, const T t) {
         d->first=0;
         d->data[d->last]=t;
     }
-    else d->data[++(d->last)];
+    else d->data[++(d->last)]=t;
     return true;
 }
 
-void deque_pop_front(Deque* const d) {
+bool deque_pop_front(Deque* const d) {
     if (deque_is_empty(d)) {
         return false;
     }
-    
-    if (d->first==POOL_SIZE-1) d->first=0;
-    else d->first++;
+    if (deque_size(d)==1) {
+        d->first=-1;
+        d->last=-1;
+    }
+    else {
+        if (d->first==POOL_SIZE-1) d->first=0;
+        else d->first++;
+    }
     return true;
 }
 
-void deque_pop_back(Deque* const d) {
+bool deque_pop_back(Deque* const d) {
     if (deque_is_empty(d)) {
         return false;
     }
-    if (d->last==0) d->last=POOL_SIZE-1;
-    else d->last--;
+    if (deque_size(d)==1) {
+        d->first=-1;
+        d->last=-1;
+    }
+    else {
+        if (d->last==0) d->last=POOL_SIZE-1;
+        else d->last--;
+    }
     return true;
 }
 
-T deque_front(const Deque* const d) {
-    if(!deque_is_empty(d)) return d->data[d->first];
-    
+int deque_front(const Deque* const d, T* const value) {
+    if(deque_is_empty(d)) {
+        return EINVAL;
+    }
+    *value = d->data[d->first];
+    return 0;    
 }
+
+int deque_back(const Deque* const d, T* const value) {
+    if(deque_is_empty(d)) {
+        return EINVAL;
+    }
+    *value = d->data[d->last];
+    return 0;    
+}
+
