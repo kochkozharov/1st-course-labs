@@ -102,3 +102,11 @@ int deque_back(const Deque* const d, T* const value) {
     return 0;    
 }
 
+void deque_clear(Deque* const d) {
+    d->first=d->last=-1;
+}
+/*
+deque_iterator first(Deque* d) {
+
+}
+*/

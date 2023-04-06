@@ -32,6 +32,7 @@ int deque_front(const Deque*, T*);
 int deque_back(const Deque*, T*);
 void deque_print(const Deque*);
 size_t deque_size(const Deque*);
+void deque_clear(Deque*);
 
 deque_iterator fisrt(const Deque*);
 deque_iterator last(const Deque*);
