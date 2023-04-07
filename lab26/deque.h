@@ -6,14 +6,13 @@
 
 #include "types.h"
 
-#define POOL_SIZE 100
-
 typedef int T;
 
 typedef struct {
-    T data[POOL_SIZE];
     int first;
     int last;
+    int capacity;
+    T data[];
 } Deque;
 
 typedef struct {
@@ -21,7 +20,7 @@ typedef struct {
     int index;
 } _deque_iterator;
 
-void deque_create(Deque*);
+Deque* deque_create(const int);
 bool deque_is_empty(const Deque*);
 bool deque_is_full(const Deque*);
 int deque_push_front(Deque*, const T);
@@ -30,8 +29,9 @@ int deque_pop_front(Deque*);
 int deque_pop_back(Deque*);
 int deque_front(const Deque*, T*);
 int deque_back(const Deque*, T*);
-size_t deque_size(const Deque*);
-void deque_clear(Deque*);
+size_t deque_length(const Deque*);
+void deque_destroy(Deque*);
+void deque_resize(Deque*);
 
 _deque_iterator first(const Deque*);
 _deque_iterator last(const Deque*);
