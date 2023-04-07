@@ -29,14 +29,14 @@ int deque_pop_front(Deque*);
 int deque_pop_back(Deque*);
 int deque_front(const Deque*, T*);
 int deque_back(const Deque*, T*);
-size_t deque_length(const Deque*);
+int deque_length(const Deque*);
 void deque_destroy(Deque*);
-void deque_resize(Deque*);
+int deque_resize(Deque**, int);
 
-_deque_iterator first(const Deque*);
-_deque_iterator last(const Deque*);
-void next(_deque_iterator*);
-void prev(_deque_iterator*);
-int fetch(const _deque_iterator*, T*);
+_deque_iterator deque_iterator_first(const Deque*);
+_deque_iterator deque_iterator_last(const Deque*);
+void deque_iterator_next(_deque_iterator*);
+void deque_iterator_prev(_deque_iterator*);
+int deque_iterator_fetch(const _deque_iterator*, T*);
 
 #endif //_DEQUE_H_
