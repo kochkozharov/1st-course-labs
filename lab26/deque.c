@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "deque.h"
 
@@ -25,8 +26,12 @@ bool deque_is_full(const Deque* const d){
 }
 
 int deque_length(const Deque* const d) {
-    if (deque_is_empty(d)) return 0;
-    else return (d->last+1+(d->capacity - d->first)%(d->capacity));
+    if (d->first <= d->last) {
+        return d->last - d->first+1;
+    }
+    else {
+        return d->last + 1 + d->capacity-d->first;
+    }
 }
 
 int deque_push_front(Deque* const d, const T t) {
@@ -119,10 +124,13 @@ int deque_resize(Deque** const d, int new_capacity)
     nd->capacity = new_capacity;
     nd->first = 0;
     nd->last = (len > new_capacity) ? new_capacity-1 : len-1;
-    int r = ((*d)->capacity-(*d)->first)%(*d)->capacity;
 
-    memcpy(nd->data,(*d)->data+(*d)->first,r * sizeof(T));
-    memcpy(nd->data+r, (*d)->data, (len - r) * sizeof(T));
+    int r = (*d)->capacity-(*d)->first; //?
+    if (len <= r)  memcpy(nd->data, (*d)->data + (*d)->first, len * sizeof(T));
+    else {
+        memcpy(nd->data,(*d)->data+(*d)->first,r * sizeof(T));
+        memcpy(nd->data+r, (*d)->data, (len - r) * sizeof(T));
+    }
     free(*d);
     *d = nd;
     return 0;
@@ -162,19 +170,58 @@ void deque_destroy(Deque* const d) {
     free(d);
 }
 
-Deque* deque_concat(Deque* a, Deque* b){
-    int len_a=deque_length(a);
-    int len_b=deque_length(b);
-    deque_resize(&a,a->capacity);
-    deque_resize(&b,b->capacity);
-    Deque* d = malloc(sizeof(Deque)+(len_a+len_b)*sizeof(T));
+Deque* deque_concat(Deque* a, Deque* b) {
+
+    Deque* d = deque_create(deque_length(a)+deque_length(b));
     if (!d) return 0;
-    d->capacity=len_a+len_b;
-    d->first=0;
-    d->last=d->capacity-1;
-    memcpy(d->data,a->data,len_a*sizeof(T));
-    memcpy(d->data+len_a,b->data,len_b*sizeof(T));
-    free(a);
-    free(b);
+    while(!deque_is_empty(a)) {
+        T el;
+        deque_back(a, &el);
+        deque_pop_back(a);
+        deque_push_front(d, el);
+    }
+    while(!deque_is_empty(b)) {
+        T el;
+        deque_front(b, &el);
+        deque_pop_front(b);
+        deque_push_back(d, el);
+    }
+    if (a!=b){
+        deque_destroy(a);
+        deque_destroy(b);
+    }
+    else free(a);
     return d;
+}
+
+int deque_capacity(const Deque* d) {
+    return d->capacity;
+}
+
+Deque* deque_hoare_sort(Deque* d) {
+    if (deque_length(d)==1) {
+        return d;
+    }
+    T pivot;
+    deque_front(d, &pivot);
+    deque_pop_front(d);
+
+    
+    Deque* left = deque_create(deque_capacity(d));
+    Deque* right = deque_create(deque_capacity(d));
+    while(!deque_is_empty(d)){
+        T el;
+        deque_back(d, &el);
+        deque_pop_back(d);
+        if (el <= pivot) deque_push_front(left, el);
+        else deque_push_front(right, el);
+    }
+    deque_destroy(d);
+    left = deque_hoare_sort(left);
+    right = deque_hoare_sort(right);
+    Deque* p = deque_create(1);
+    deque_push_back(p,pivot);
+    Deque* sorted = deque_concat(left,p);
+    sorted = deque_concat(sorted, right);
+    return sorted;
 }
