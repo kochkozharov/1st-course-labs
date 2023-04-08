@@ -29,7 +29,6 @@ int deque_length(const Deque* const d) {
     if (d->first==-1 && d->last==-1) {
         return 0;
     }
-
     if (d->first <= d->last) {
         return d->last - d->first+1;
     }
@@ -210,15 +209,15 @@ Deque* deque_hoare_sort(Deque* d) {
     }
     T pivot;
     deque_front(d, &pivot);
+    deque_pop_front(d);
     Deque* left = deque_create(deque_capacity(d));
     Deque* right = deque_create(deque_capacity(d));
-    printf("while\n");
-    fflush(stdout);
     while(!deque_is_empty(d)){
         T el;
         deque_front(d, &el);
         deque_pop_front(d);
         printf("%d %d\n ", el, pivot);
+        fflush(stdout);
         if (el < pivot) {
             deque_push_back(left, el);
             printf("if\n");
@@ -231,12 +230,53 @@ Deque* deque_hoare_sort(Deque* d) {
         }
 
     }
-    
+    printf("while\n");
+    fflush(stdout);
     deque_destroy(d);
+    printf("destroy\n");
+    fflush(stdout);
     left = deque_hoare_sort(left);
+    printf("left");
+    for (_deque_iterator* i = deque_iterator_first(left);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
+    printf("pivot %d\n", pivot);
+    deque_push_back(left, pivot);
+    printf("left");
+    for (_deque_iterator* i = deque_iterator_first(left);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
+    
     right = deque_hoare_sort(right);
+    for (_deque_iterator* i = deque_iterator_first(right);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
     Deque* sorted = deque_concat(left,right);
     return sorted;
 }
-// 2 2 3
-// 2
+// 3 -1 6 7 6
+//     3
+// -1    3 6 7 6
+//  *       3
+//             3 6 7 6
+//                3
+//                  3 6 7 6
+//                 ...
+
+// 3 -1 6 7 6
+//     3
+// -1    6 7 6 3
+//  *       6
+//        3    6  7  6 
+//        *       6
+//                   6 7 6
+//                 ...
