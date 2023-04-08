@@ -216,50 +216,18 @@ Deque* deque_hoare_sort(Deque* d) {
         T el;
         deque_front(d, &el);
         deque_pop_front(d);
-        printf("%d %d\n ", el, pivot);
-        fflush(stdout);
         if (el < pivot) {
             deque_push_back(left, el);
-            printf("if\n");
-            fflush(stdout);
         }
         else {
             deque_push_back(right, el);
-            printf("else\n");
-            fflush(stdout);
         }
-
     }
-    printf("while\n");
-    fflush(stdout);
     deque_destroy(d);
-    printf("destroy\n");
-    fflush(stdout);
     left = deque_hoare_sort(left);
-    printf("left");
-    for (_deque_iterator* i = deque_iterator_first(left);i;deque_iterator_next(&i)) {
-        T v;
-        deque_iterator_fetch(i, &v);
-        printf("%d ",v);
-    }
-    printf("\n");
-    printf("pivot %d\n", pivot);
+    if (deque_is_full(left)) deque_resize(&left, left->capacity+1);
     deque_push_back(left, pivot);
-    printf("left");
-    for (_deque_iterator* i = deque_iterator_first(left);i;deque_iterator_next(&i)) {
-        T v;
-        deque_iterator_fetch(i, &v);
-        printf("%d ",v);
-    }
-    printf("\n");
-    
     right = deque_hoare_sort(right);
-    for (_deque_iterator* i = deque_iterator_first(right);i;deque_iterator_next(&i)) {
-        T v;
-        deque_iterator_fetch(i, &v);
-        printf("%d ",v);
-    }
-    printf("\n");
     Deque* sorted = deque_concat(left,right);
     return sorted;
 }

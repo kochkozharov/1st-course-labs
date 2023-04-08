@@ -23,6 +23,7 @@ typedef struct {
 Deque* deque_create(const int);
 bool deque_is_empty(const Deque*);
 bool deque_is_full(const Deque*);
+int deque_resize(Deque**, int);
 int deque_push_front(Deque*, const T);
 int deque_push_back(Deque*, const T);
 int deque_pop_front(Deque*);
@@ -31,7 +32,6 @@ int deque_front(const Deque*, T*);
 int deque_back(const Deque*, T*);
 int deque_length(const Deque*);
 void deque_destroy(Deque*);
-int deque_resize(Deque**, int);
 Deque* deque_concat(Deque*, Deque*);
 Deque* deque_hoare_sort(Deque*);
 int deque_capacity(const Deque*);

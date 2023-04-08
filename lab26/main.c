@@ -60,7 +60,7 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
-
+    printf("\n");
     Deque* g = deque_create(10);
     deque_push_back(g,2);
     deque_push_back(g,2);
@@ -73,6 +73,7 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
+
     Deque* q = deque_hoare_sort(g);
         for (_deque_iterator* i = deque_iterator_first(q);i;deque_iterator_next(&i)) {
         T v;
