@@ -127,28 +127,28 @@ int deque_resize(Deque** const d, int new_capacity)
     return 0;
 }
 
-_deque_iterator deque_iterator_first(const Deque* const d) {
-    _deque_iterator i;
-    i.d=d;
-    i.index=d->first;
+_deque_iterator* deque_iterator_first(const Deque* const d) {
+    _deque_iterator* i = malloc(sizeof(_deque_iterator));
+    i->d=d;
+    i->index=d->first;
     return i;
 }
 
-_deque_iterator deque_iterator_last(const Deque* const d) {
-    _deque_iterator i;
-    i.d=d;
-    i.index=d->last;
+_deque_iterator* deque_iterator_last(const Deque* const d) {
+    _deque_iterator* i = malloc(sizeof(_deque_iterator));
+    i->d=d;
+    i->index=d->last;
     return i;
 }
 
-void deque_iterator_next(_deque_iterator* const i) {
-    if (i->index == i->d->last) i->index = -1;
-    else if (++(i->index) == i->d->capacity) i->index=0;
+void deque_iterator_next(_deque_iterator** const i) {
+    if ((*i)->index == (*i)->d->last) {free(*i);*i=0;}
+    else if (++((*i)->index) == (*i)->d->capacity) (*i)->index=0;
 }
 
-void deque_iterator_prev(_deque_iterator* const i) {
-    if (i->index == i->d->first) i->index = -1;
-    else if (--(i->index) == -1) i->index=i->d->capacity-1;
+void deque_iterator_prev( _deque_iterator** const i) {
+    if ((*i)->index == (*i)->d->first) {free(*i);*i=0;}
+    else if (--((*i)->index) == -1) (*i)->index=(*i)->d->capacity-1;
 }
 
 int deque_iterator_fetch(const _deque_iterator* const i, T* const value) {

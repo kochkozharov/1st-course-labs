@@ -33,10 +33,10 @@ int deque_length(const Deque*);
 void deque_destroy(Deque*);
 int deque_resize(Deque**, int);
 
-_deque_iterator deque_iterator_first(const Deque*);
-_deque_iterator deque_iterator_last(const Deque*);
-void deque_iterator_next(_deque_iterator*);
-void deque_iterator_prev(_deque_iterator*);
+_deque_iterator* deque_iterator_first(const Deque*);
+_deque_iterator* deque_iterator_last(const Deque*);
+void deque_iterator_next(_deque_iterator**);
+void deque_iterator_prev(_deque_iterator**);
 int deque_iterator_fetch(const _deque_iterator*, T*);
 
 #endif //_DEQUE_H_
