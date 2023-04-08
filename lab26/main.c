@@ -16,7 +16,7 @@ int main(void){
     }
     printf("\n");
     printf("-------------\n");
-    deque_resize(&a,5);
+    printf("%d %d\n",a->first,a->last);
     deque_pop_front(a);
     deque_push_front(a,3);
     for (_deque_iterator* i = deque_iterator_first(a);i;deque_iterator_next(&i)) {
@@ -25,5 +25,34 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
+    printf("-------------\n");
+    Deque* b = deque_create(5);
+    deque_push_back(b,6);
+    deque_push_front(b,6);
+    deque_resize(&b, 3);
+    printf("%d \n",b->last);
+    for (_deque_iterator* i = deque_iterator_first(b);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
+    deque_resize(&b, 2);
+    printf("%d \n",b->last);
+    for (_deque_iterator* i = deque_iterator_first(b);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
+
+    //deque_concat(a,b);
+    /*
+    for (_deque_iterator* i = deque_iterator_first(a);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    */
     return 0;
 }

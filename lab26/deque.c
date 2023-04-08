@@ -119,7 +119,8 @@ int deque_resize(Deque** const d, int new_capacity)
     nd->capacity = new_capacity;
     nd->first = 0;
     nd->last = (len > new_capacity) ? new_capacity-1 : len-1;
-    int r = (*d)->capacity-(*d)->first;
+    int r = ((*d)->capacity-(*d)->first)%(*d)->capacity;
+
     memcpy(nd->data,(*d)->data+(*d)->first,r * sizeof(T));
     memcpy(nd->data+r, (*d)->data, (len - r) * sizeof(T));
     free(*d);
@@ -161,7 +162,17 @@ void deque_destroy(Deque* const d) {
     free(d);
 }
 /*
-deque_iterator first(Deque* d) {
+Deque* deque_concat(Deque* dst, Deque* src){
 
+    deque_resize(&dst,dst->capacity);
+    deque_resize(&src,src->capacity);
+    Deque* d = malloc(sizeof(Deque)+(deque_length(dst)+deque_length(dst))*sizeof(T));
+    free(src);
+    free(dst);
+    return d;
+    //dst->last = dst->last+deque_length(src);
+    //memcpy(dst->data+deque_length(dst),src->data,deque_length(src)*sizeof(T));
+    //free(*src);
+    
 }
 */

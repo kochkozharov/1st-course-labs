@@ -32,6 +32,8 @@ int deque_back(const Deque*, T*);
 int deque_length(const Deque*);
 void deque_destroy(Deque*);
 int deque_resize(Deque**, int);
+Deque* deque_concat(Deque*, Deque*);
+int deque_hoare_sort(Deque*);
 
 _deque_iterator* deque_iterator_first(const Deque*);
 _deque_iterator* deque_iterator_last(const Deque*);
