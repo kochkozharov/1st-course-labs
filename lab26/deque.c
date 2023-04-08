@@ -138,6 +138,7 @@ int deque_resize(Deque** const d, int new_capacity)
 
 _deque_iterator* deque_iterator_first(const Deque* const d) {
     _deque_iterator* i = malloc(sizeof(_deque_iterator));
+    if (!i) return 0;
     i->d=d;
     i->index=d->first;
     return i;
@@ -145,6 +146,7 @@ _deque_iterator* deque_iterator_first(const Deque* const d) {
 
 _deque_iterator* deque_iterator_last(const Deque* const d) {
     _deque_iterator* i = malloc(sizeof(_deque_iterator));
+    if (!i) return 0;
     i->d=d;
     i->index=d->last;
     return i;
