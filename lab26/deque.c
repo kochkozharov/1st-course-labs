@@ -161,18 +161,20 @@ int deque_iterator_fetch(const _deque_iterator* const i, T* const value) {
 void deque_destroy(Deque* const d) {
     free(d);
 }
-/*
-Deque* deque_concat(Deque* dst, Deque* src){
 
-    deque_resize(&dst,dst->capacity);
-    deque_resize(&src,src->capacity);
-    Deque* d = malloc(sizeof(Deque)+(deque_length(dst)+deque_length(dst))*sizeof(T));
-    free(src);
-    free(dst);
+Deque* deque_concat(Deque* a, Deque* b){
+    int len_a=deque_length(a);
+    int len_b=deque_length(b);
+    deque_resize(&a,a->capacity);
+    deque_resize(&b,b->capacity);
+    Deque* d = malloc(sizeof(Deque)+(len_a+len_b)*sizeof(T));
+    if (!d) return 0;
+    d->capacity=len_a+len_b;
+    d->first=0;
+    d->last=d->capacity-1;
+    memcpy(d->data,a->data,len_a*sizeof(T));
+    memcpy(d->data+len_a,b->data,len_b*sizeof(T));
+    free(a);
+    free(b);
     return d;
-    //dst->last = dst->last+deque_length(src);
-    //memcpy(dst->data+deque_length(dst),src->data,deque_length(src)*sizeof(T));
-    //free(*src);
-    
 }
-*/

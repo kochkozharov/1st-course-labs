@@ -16,9 +16,9 @@ int main(void){
     }
     printf("\n");
     printf("-------------\n");
-    printf("%d %d\n",a->first,a->last);
     deque_pop_front(a);
     deque_push_front(a,3);
+    deque_resize(&a,a->capacity);
     for (_deque_iterator* i = deque_iterator_first(a);i;deque_iterator_next(&i)) {
         T v;
         deque_iterator_fetch(i, &v);
@@ -45,7 +45,14 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
-
+    printf("-------------\n");
+    Deque* c = deque_concat(a,b);
+    for (_deque_iterator* i = deque_iterator_first(c);i;deque_iterator_next(&i)) {
+        T v;
+        deque_iterator_fetch(i, &v);
+        printf("%d ",v);
+    }
+    printf("\n");
     //deque_concat(a,b);
     /*
     for (_deque_iterator* i = deque_iterator_first(a);i;deque_iterator_next(&i)) {
