@@ -47,8 +47,9 @@ int deque_push_front(Deque** const ptr_d, const T t) {
         return 0;
     }
     if (deque_is_full(d)) {
-        return EINVAL;
+        *ptr_d=deque_resize(d,(d->capacity)*2);
     }
+    d = *ptr_d;
     if (d->first==0) {
         d->first=d->capacity-1;
         d->data[d->first]=t;
@@ -68,8 +69,9 @@ int deque_push_back(Deque** const ptr_d, const T t) {
         return 0;
     }
     if (deque_is_full(d)) {
-        return EINVAL;
+        *ptr_d=deque_resize(d,(d->capacity)*2);
     }
+    d = *ptr_d;
     if (d->last==d->capacity-1) {
         d->last=0;
         d->data[d->last]=t;
@@ -228,7 +230,6 @@ Deque* deque_hoare_sort(Deque* d) {
     }
     deque_destroy(d);
     left = deque_hoare_sort(left);
-    if (deque_is_full(left)) left=deque_resize(left, left->capacity+1);
     deque_push_back(&left, pivot);
     right = deque_hoare_sort(right);
     Deque* sorted = deque_concat(left,right);
