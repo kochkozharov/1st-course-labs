@@ -38,15 +38,16 @@ int deque_length(const Deque* const d) {
 }
 
 int deque_push_front(Deque* const d, const T t) {
-    if (deque_is_full(d)) {
-        return EINVAL;
-    }
-    else if (deque_is_empty(d)) {
+    if (deque_is_empty(d)) {
         d->first=0;
         d->last=0;
         d->data[d->first]=t;
+        return 0;
     }
-    else if (d->first==0) {
+    if (deque_is_full(d)) {
+        return EINVAL;
+    }
+    if (d->first==0) {
         d->first=d->capacity-1;
         d->data[d->first]=t;
     }
@@ -57,15 +58,16 @@ int deque_push_front(Deque* const d, const T t) {
 }
 
 int deque_push_back(Deque* const d, const T t) {
-    if (deque_is_full(d)) {
-        return EINVAL;
-    }
     if (deque_is_empty(d)) {
         d->first=0;
         d->last=0;
         d->data[d->last]=t;
+        return 0;
     }
-    else if (d->last==d->capacity-1) {
+    if (deque_is_full(d)) {
+        return EINVAL;
+    }
+    if (d->last==d->capacity-1) {
         d->last=0;
         d->data[d->last]=t;
     }
@@ -117,26 +119,25 @@ int deque_back(const Deque* const d, T* const value) {
     return 0;    
 }
 
-int deque_resize(Deque** const d, int new_capacity)
+Deque* deque_resize(Deque* const d, int new_capacity)
 {
-    int len = deque_length(*d);
+    int len = deque_length(d);
     if (new_capacity <= 0)
-        return EINVAL;
+        return NULL;
     Deque* nd = malloc(sizeof(Deque) + new_capacity * sizeof(T));
-    if (!nd) return ENOMEM;
+    if (!nd) return NULL;
     nd->capacity = new_capacity;
     nd->first = 0;
     nd->last = (len > new_capacity) ? new_capacity-1 : len-1;
 
-    int r = (*d)->capacity-(*d)->first; //?
-    if (len <= r)  memcpy(nd->data, (*d)->data + (*d)->first, len * sizeof(T));
+    int r = (d)->capacity-(d)->first; //?
+    if (len <= r)  memcpy(nd->data, (d)->data + (d)->first, len * sizeof(T));
     else {
-        memcpy(nd->data,(*d)->data+(*d)->first,r * sizeof(T));
-        memcpy(nd->data+r, (*d)->data, (len - r) * sizeof(T));
+        memcpy(nd->data,(d)->data+(d)->first,r * sizeof(T));
+        memcpy(nd->data+r, (d)->data, (len - r) * sizeof(T));
     }
-    free(*d);
-    *d = nd;
-    return 0;
+    free(d);
+    return nd;
 }
 
 _deque_iterator* deque_iterator_first(const Deque* const d) {
@@ -225,7 +226,7 @@ Deque* deque_hoare_sort(Deque* d) {
     }
     deque_destroy(d);
     left = deque_hoare_sort(left);
-    if (deque_is_full(left)) deque_resize(&left, left->capacity+1);
+    if (deque_is_full(left)) left=deque_resize(left, left->capacity+1);
     deque_push_back(left, pivot);
     right = deque_hoare_sort(right);
     Deque* sorted = deque_concat(left,right);

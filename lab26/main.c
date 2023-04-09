@@ -35,7 +35,7 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
-    deque_resize(&b, 1);
+    b=deque_resize(b, 1);
     printf("%d \n",b->last);
     for (_deque_iterator* i = deque_iterator_first(b);i;deque_iterator_next(&i)) {
         T v;
