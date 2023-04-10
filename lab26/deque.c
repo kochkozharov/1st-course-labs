@@ -1,10 +1,7 @@
 #include <errno.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "deque.h"
-
-
 
 Deque* deque_create(const int capacity)
 {
@@ -28,6 +25,10 @@ int deque_length(const Deque* const d) {
     }
 }
 
+int deque_capacity(const Deque* d) {
+    return d->capacity;
+}
+
 bool deque_is_empty(const Deque* const d) {
     return d->first==-1 && d->last==-1;
 }
@@ -35,8 +36,6 @@ bool deque_is_empty(const Deque* const d) {
 bool deque_is_full(const Deque* const d){
     return (d->first==0 && d->last==d->capacity-1) || (d->first == d->last+1);
 }
-
-
 
 int deque_push_front(Deque** const ptr_d, const T t) {
     Deque* d = *ptr_d;
@@ -145,6 +144,10 @@ Deque* deque_resize(Deque* const d, int new_capacity)
     return nd;
 }
 
+void deque_destroy(Deque* const d) {
+    free(d);
+}
+
 _deque_iterator* deque_iterator_first(const Deque* const d) {
     _deque_iterator* i = malloc(sizeof(_deque_iterator));
     if (!i) return 0;
@@ -175,65 +178,6 @@ int deque_iterator_fetch(const _deque_iterator* const i, T* const value) {
     if (i->index == -1) return EINVAL;
     *value = i->d->data[i->index];
     return 0;
-}
-
-void deque_destroy(Deque* const d) {
-    free(d);
-}
-
-Deque* deque_concat(Deque* a, Deque* b) {
-    Deque* d = deque_create(deque_length(a)+deque_length(b));
-    if (!d) return 0;
-    while(!deque_is_empty(a)) {
-        T el;
-        deque_back(a, &el);
-        deque_pop_back(a);
-        deque_push_front(&d, el);
-    }
-    while(!deque_is_empty(b)) {
-        T el;
-        deque_front(b, &el);
-        deque_pop_front(b);
-        deque_push_back(&d, el);
-    }
-    if (a!=b){
-        deque_destroy(a);
-        deque_destroy(b);
-    }
-    else deque_destroy(a);
-    return d;
-}
-
-int deque_capacity(const Deque* d) {
-    return d->capacity;
-}
-
-Deque* deque_hoare_sort(Deque* d) {
-    if (deque_length(d)<=1) {
-        return d;
-    }
-    T pivot;
-    deque_front(d, &pivot);
-    deque_pop_front(d);
-    Deque* left = deque_create(deque_capacity(d));
-    Deque* right = deque_create(deque_capacity(d));
-    while(!deque_is_empty(d)){
-        T el;
-        deque_front(d, &el);
-        deque_pop_front(d);
-        if (el < pivot) {
-            deque_push_back(&left, el);
-        }
-        else {
-            deque_push_back(&right, el);
-        }
-    }
-    deque_destroy(d);
-    left = deque_hoare_sort(left);
-    deque_push_back(&left, pivot);
-    right = deque_hoare_sort(right);
-    Deque* sorted = deque_concat(left,right);
-    return sorted;
 }
 // 3 -1 6 7 6
 //     3

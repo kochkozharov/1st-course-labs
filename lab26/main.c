@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "types.h"
 #include "deque.h"
+#include "sort.h"
 
 int main(void){
     Deque* a = deque_create(4);

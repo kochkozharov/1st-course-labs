@@ -40,7 +40,4 @@ void deque_iterator_next(_deque_iterator**);
 void deque_iterator_prev(_deque_iterator**);
 int deque_iterator_fetch(const _deque_iterator*, T*);
 
-Deque* deque_concat(Deque*, Deque*);
-Deque* deque_hoare_sort(Deque*);
-
 #endif //_DEQUE_H_
