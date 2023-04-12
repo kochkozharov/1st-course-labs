@@ -86,10 +86,11 @@ Makefile  README.md  build.sh*  deque.c  deque.h  deque.o  main*  main.c  main.o
 ## 9. Замечания автора по существу работы 
 
 ### Защита
-<b>[Контест (Div. 2)](https://codeforces.com/contest/1814/submission/201021199)</b>
+<b>[Контест (Div. 2)](https://codeforces.com/contest/1805/submission/200441316)</b>
 
-<b>[Дорешка](https://codeforces.com/contest/1814/submission/201736629)</b>
+<b>[Дорешка 1](https://codeforces.com/contest/1805/submission/201876821)</b>
 
+<b>[Дорешка 2](https://codeforces.com/contest/1805/submission/201875505)</b>
 ## 10.Вывод работы:
 После выполнения лабораторной работы были получены навыки модульного программирования на языке С и изучены различные ньюансы указателей и динамической аллокации памяти. Так же были изучены некоторые стандартные библиотеки Си.
 
