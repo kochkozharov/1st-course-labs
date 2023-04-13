@@ -87,6 +87,7 @@ Makefile  README.md  build.sh*  deque.c  deque.h  deque.o  main*  main.c  main.o
 
 ### Защита
 <b>Лаба 26</b>
+
 <b>[Контест (Div. 2)](https://codeforces.com/contest/1805/submission/200441316)</b>
 
 <b>[Дорешка 1](https://codeforces.com/contest/1805/submission/201876821)</b>
