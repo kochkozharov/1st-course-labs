@@ -16,7 +16,7 @@ Deque* deque_create(const int capacity)
     return d;
 }
 
-int deque_length(const Deque* const d) {
+size_t deque_length(const Deque* const d) {
     if (d->first <= d->last) {
         return d->last - d->first+1;
     }
@@ -25,7 +25,7 @@ int deque_length(const Deque* const d) {
     }
 }
 
-int deque_capacity(const Deque* d) {
+size_t deque_capacity(const Deque* d) {
     return d->capacity;
 }
 
