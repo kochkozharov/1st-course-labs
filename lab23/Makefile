@@ -5,7 +5,7 @@ LDFLAGS=
 LDLIBS=
 SOURCES=stack.c tree.c main.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=tree
+EXECUTABLE=main
 
 debug: CFLAGS+=-Og -g
 debug: all
