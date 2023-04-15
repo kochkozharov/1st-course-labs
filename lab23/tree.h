@@ -5,10 +5,10 @@
 #include <stddef.h>
 #include "types.h"
 
-typedef struct treeNode treeNode;
+typedef struct tree_node tree_node;
 
 typedef struct {
-    treeNode *root;
+    tree_node *root;
     size_t size;
 } tree;
 

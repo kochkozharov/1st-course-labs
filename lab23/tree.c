@@ -6,8 +6,8 @@
 #include "tree.h"
 #include "types.h"
 
-struct treeNode {
-    treeNode *parent, *left, *right;
+struct tree_node {
+    tree_node *parent, *left, *right;
     t value;
 };
 
@@ -18,7 +18,7 @@ void tree_clear(tree * const tree) {
 }
 
 bool tree_contains(const tree * const tree, const t value) {
-    treeNode *node = tree->root;
+    tree_node *node = tree->root;
     while (node != NULL) {
         if (node->value > value)
             node = node->left;
@@ -36,7 +36,7 @@ void tree_create(tree * const tree) {
 }
 
 int tree_erase(tree * const tree, const t value) {
-    treeNode **ptr = &tree->root, *node = NULL;
+    tree_node **ptr = &tree->root, *node = NULL;
     while (*ptr != NULL) {
         node = *ptr;
         if (node->value > value)
@@ -76,7 +76,7 @@ int tree_erase(tree * const tree, const t value) {
 }
 
 int tree_insert(tree * const tree, const t value) {
-    treeNode **ptr = &tree->root, *node = NULL;
+    tree_node **ptr = &tree->root, *node = NULL;
     while (*ptr != NULL) {
         node = *ptr;
         if (node->value > value)
@@ -86,7 +86,7 @@ int tree_insert(tree * const tree, const t value) {
         else
             return EINVAL;
     }
-    *ptr = malloc(sizeof(treeNode));
+    *ptr = malloc(sizeof(tree_node));
     if (*ptr == NULL)
         return errno;
     ++tree->size;
