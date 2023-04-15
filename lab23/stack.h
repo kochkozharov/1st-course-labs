@@ -8,18 +8,16 @@
 
 typedef struct {
     t *data;
-    size_t capacity, size;
+    size_t capacity, depth;
 } stack;
 
-int stack_back(const stack *stack, t *value);
+int stack_top(const stack *stack, t *value);
 
 size_t stack_capacity(const stack *stack);
 
 void stack_clear(stack *stack);
 
 void stack_create(stack *stack);
-
-t *stac_data(const stack *stack);
 
 bool stack_is_empty(const stack *stack);
 
@@ -29,7 +27,7 @@ int stack_push_back(stack *stack, t value);
 
 int stack_resize(stack *stack, size_t newSize, t value);
 
-size_t stack_size(const stack *stack);
+size_t stack_depth(const stack *stack);
 
 void stack_destroy(stack *stack);
 
