@@ -54,6 +54,4 @@ dkms.conf
 *.log
 *.aux
 *-eps-converted-to.pdf
-*.eps
-*.gp
 main
