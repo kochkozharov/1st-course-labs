@@ -8,7 +8,8 @@ static size_t new_capacity(size_t capacity);
 
 int stack_top(const stack * const stack, t * const value) {
     if (stack->depth == 0)
-        return EINVAL;
+        errno = EINVAL;
+        return -1;
     *value = stack->data[stack->depth - 1];
     return 0;
 }
@@ -40,7 +41,7 @@ int stack_push_back(stack * const stack, const t value) {
         const size_t capacity = new_capacity(stack->capacity);
         t * const data = realloc(stack->data, capacity * sizeof(t));
         if (data == NULL)
-            return errno;
+            return -1;
         stack->data = data;
         stack->capacity = capacity;
     }
@@ -53,7 +54,8 @@ int stack_push_back(stack * const stack, const t value) {
 
 int stack_pop_back(stack * const stack) {
     if (stack->depth == 0)
-        return EINVAL;
+        errno = EINVAL;
+        return -1;
     --stack->depth;
     return 0;
 }
@@ -72,7 +74,7 @@ int stack_resize(stack * const stack, const size_t newSize, const t value) {
     assert(newSize > stack->capacity);
     t * const data = realloc(stack->data, newSize * sizeof(t));
     if (data == NULL)
-        return errno;
+        return -1;
     stack->data = data;
     stack->capacity = newSize;
     while (stack->depth < newSize)

@@ -39,7 +39,8 @@ int tree_erase(tree * const tree, const t value) {
             break;
     }
     if (node == NULL)
-        return EINVAL;
+        errno = EINVAL;
+        return -1;
 
     assert(node->value == value);
     if (node->left != NULL && node->right != NULL) {
@@ -76,11 +77,12 @@ int tree_insert(tree * const tree, const t value) {
         else if (node->value < value)
             ptr = &node->right;
         else
-            return EINVAL;
+            errno = EINVAL;
+            return -1;
     }
     *ptr = malloc(sizeof(tree_node));
     if (*ptr == NULL)
-        return errno;
+        return -1;
     ++tree->size;
     (*ptr)->parent = node;
     (*ptr)->left = NULL;
