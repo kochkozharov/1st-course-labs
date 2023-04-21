@@ -13,6 +13,5 @@ int main(void) {
     stack st;
     stack_create(&st);
     t topvalue;
-    stack_top(&st, &topvalue);
-    perror("");
+    if (stack_top(&st, &topvalue)!=0) perror("stack_top");
 }
