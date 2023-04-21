@@ -1,9 +1,8 @@
 #ifndef _TREE_H_
 #define _TREE_H_
-
+#include "types.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include "types.h"
 
 typedef struct tree_node tree_node;
 

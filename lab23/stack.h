@@ -1,10 +1,8 @@
 #ifndef _STACK_H_
 #define _STACK_H_
-
+#include "types.h"
 #include <stdbool.h>
 #include <stddef.h>
-
-#include "types.h"
 
 typedef struct {
     t *data;

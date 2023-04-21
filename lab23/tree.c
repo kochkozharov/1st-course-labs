@@ -1,10 +1,8 @@
+#include "tree.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-#include "tree.h"
-#include "types.h"
 
 struct tree_node {
     tree_node *parent, *left, *right;

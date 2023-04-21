@@ -1,9 +1,8 @@
+#include "stack.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "types.h"
-#include "stack.h"
 
 static size_t new_capacity(size_t capacity);
 

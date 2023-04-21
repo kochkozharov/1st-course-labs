@@ -7,9 +7,6 @@ SOURCES=stack.c tree.c main.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=main
 
-debug: CFLAGS+=-Og -g
-debug: all
-
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
@@ -20,3 +17,6 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	$(RM) *.o $(EXECUTABLE)
+
+debug: CFLAGS+=-Og -g
+debug: all

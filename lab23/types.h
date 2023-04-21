@@ -2,7 +2,6 @@
 #define TYPES_H
 
 typedef float t;
-
 typedef signed char schar;
 typedef unsigned char uchar;
 typedef short shrt;
