@@ -2,7 +2,7 @@
 #include "sort.h"
 
 Deque* deque_concat(Deque* a, Deque* b) {
-    Deque* d = deque_create(deque_length(a)+deque_length(b));
+    Deque* d = deque_create(deque_length(a)+deque_length(b)+1);
     if (!d) return 0;
     while(!deque_is_empty(a)) {
         T el;

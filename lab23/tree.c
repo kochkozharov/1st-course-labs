@@ -4,12 +4,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-struct tree_node {
-    tree_node *parent, *left, *right;
-    t value;
-};
-
-
 void tree_clear(tree * const tree) {
     tree->size=0;
     /* non-recursive post-order */;

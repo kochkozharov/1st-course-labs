@@ -4,7 +4,10 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct tree_node tree_node;
+typedef struct tree_node {
+    struct tree_node *parent, *left, *right;
+    t value;
+} tree_node;
 
 typedef struct {
     tree_node *root;
