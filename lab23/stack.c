@@ -6,7 +6,7 @@
 
 static size_t new_capacity(size_t capacity);
 
-int stack_top(const stack * const stack, t * const value) {
+int stack_top(const stack * const stack, stack_t * const value) {
     if (stack->depth == 0)
         errno = EINVAL;
         return -1;
@@ -35,11 +35,11 @@ bool stack_is_empty(const stack * const stack) {
     return stack->depth == 0;
 }
 
-int stack_push_back(stack * const stack, const t value) {
+int stack_push_back(stack * const stack, const stack_t value) {
     assert(stack->capacity >= stack->depth);
     if (stack->capacity == stack->depth) {
         const size_t capacity = new_capacity(stack->capacity);
-        t * const data = realloc(stack->data, capacity * sizeof(t));
+        stack_t * const data = realloc(stack->data, capacity * sizeof(stack_t));
         if (data == NULL)
             return -1;
         stack->data = data;
@@ -60,7 +60,7 @@ int stack_pop_back(stack * const stack) {
     return 0;
 }
 
-int stack_resize(stack * const stack, const size_t newSize, const t value) {
+int stack_resize(stack * const stack, const size_t newSize, const stack_t value) {
     if (newSize <= stack->depth) {
         stack->depth = newSize;
         return 0;
@@ -72,7 +72,7 @@ int stack_resize(stack * const stack, const size_t newSize, const t value) {
         return 0;
     }
     assert(newSize > stack->capacity);
-    t * const data = realloc(stack->data, newSize * sizeof(t));
+    stack_t * const data = realloc(stack->data, newSize * sizeof(stack_t));
     if (data == NULL)
         return -1;
     stack->data = data;

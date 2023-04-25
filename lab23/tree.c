@@ -1,4 +1,5 @@
 #include "tree.h"
+#include "stack.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -9,7 +10,7 @@ void tree_clear(tree * const tree) {
     /* non-recursive post-order */;
 }
 
-bool tree_contains(const tree * const tree, const t value) {
+bool tree_contains(const tree * const tree, const tree_t value) {
     tree_node *node = tree->root;
     while (node != NULL) {
         if (node->value > value)
@@ -27,7 +28,7 @@ void tree_create(tree * const tree) {
     tree->size = 0;
 }
 
-int tree_erase(tree * const tree, const t value) {
+int tree_erase(tree * const tree, const tree_t value) {
     tree_node **ptr = &tree->root, *node = NULL;
     while (*ptr != NULL) {
         node = *ptr;
@@ -44,7 +45,7 @@ int tree_erase(tree * const tree, const t value) {
 
     assert(node->value == value);
     if (node->left != NULL && node->right != NULL) {
-        t * const value = &node->value;
+        tree_t * const value = &node->value;
         ptr = &node->right;
         node = node->right;
         while (node->left != NULL) {
@@ -68,7 +69,7 @@ int tree_erase(tree * const tree, const t value) {
     return 0;
 }
 
-int tree_insert(tree * const tree, const t value) {
+int tree_insert(tree * const tree, const tree_t value) {
     tree_node **ptr = &tree->root, *node = NULL;
     while (*ptr != NULL) {
         node = *ptr;
@@ -101,6 +102,19 @@ size_t tree_size(const tree * const tree) {
 
 void tree_destroy(tree * const tree) {
     tree_clear(tree);
+}
+
+void tree_print_inorder_traversal(tree * const tree) {
+    tree_node * node = tree->root;
+    stack st;
+    stack_create(&st);
+    bool done = false;
+    while (!done) {
+        if (node) {
+            
+        }
+    }
+    stack_destroy(&st);
 }
 
 
