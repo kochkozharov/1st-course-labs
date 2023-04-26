@@ -40,9 +40,10 @@ int tree_erase(tree * const tree, const tree_t value) {
         else
             break;
     }
-    if (node == NULL)
+    if (node == NULL) {
         errno = EINVAL;
         return -1;
+    }
 
     assert(node->value == value);
     if (node->left != NULL && node->right != NULL) {
@@ -78,9 +79,10 @@ int tree_insert(tree * const tree, const tree_t value) {
             ptr = &node->left;
         else if (node->value < value) 
             ptr = &node->right;
-        else
+        else {
             errno = EINVAL;
             return -1;
+        }
     }
     *ptr = malloc(sizeof(tree_node));
     if (*ptr == NULL)
@@ -96,7 +98,6 @@ int tree_insert(tree * const tree, const tree_t value) {
     (*ptr)->left = NULL;
     (*ptr)->right = NULL;
     (*ptr)->value = value;
-    printf("%f\n",value);
     return 0;
 }
 
@@ -112,7 +113,8 @@ void tree_destroy(tree * const tree) {
     tree_clear(tree);
 }
 
-void tree_inorder_traversal(tree * const tree, void (* process)(tree_node * node)) {
+void tree_inorder_traversal(const tree * const tree, void (* const process)(tree_node * const node)) {
+    printf("lol");
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);
@@ -122,14 +124,15 @@ void tree_inorder_traversal(tree * const tree, void (* process)(tree_node * node
             stack_push_back(&st, node);
             node = node->left;
         }
-        else if (stack_is_empty(&st)) {
+        else if (stack_is_empty(&st)) 
             done = true;
+        else {
+            stack_top(&st, &node);
+            stack_pop_back(&st);
+            process(node);
+            node = node->right;
         }
-        stack_top(&st, &node);
-        stack_pop_back(&st);
-        process(node);
-        node = node->right;
-    }
+    } 
     stack_destroy(&st);
 }
 
