@@ -75,9 +75,9 @@ int tree_insert(tree * const tree, const tree_t value) {
     tree_node **ptr = &tree->root, *node = NULL;
     while (*ptr != NULL) {
         node = *ptr;
-        if (node->value > value)
+        if (value < node->value)
             ptr = &node->left;
-        else if (node->value < value) 
+        else if (value > node->value) 
             ptr = &node->right;
         else {
             errno = EINVAL;
@@ -113,26 +113,74 @@ void tree_destroy(tree * const tree) {
     tree_clear(tree);
 }
 
-void tree_inorder_traversal(const tree * const tree, void (* const process)(tree_node * const node)) {
+void tree_print_postorder(const tree * const tree) {
+    tree_node * node = tree->root;
+    tree_node * last_visited_node = NULL;
+    stack st;
+    stack_create(&st);
+    while(!stack_is_empty(&st) || node) {
+        if (node) {
+            stack_push_back(&st, node);
+            node = node->right;
+        }
+        else {
+            tree_node * top_node;
+            stack_top(&st, &top_node);
+            if (top_node->left && (last_visited_node != top_node->left))
+                node=top_node->left;
+            else {
+                for (size_t i=0; i < top_node->depth; i++) {
+                    printf(" ");
+                }         
+                printf(TREE_FORMAT_STR, top_node->value);
+                stack_top(&st, &last_visited_node);
+                stack_pop_back(&st);
+            }
+        }
+    }
+    stack_destroy(&st);
+}
+
+
+void tree_print_preorder(const tree * const tree) {
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);
-    bool done = false;
-    while (!done) {
+    stack_push_back(&st,node);
+    while (!stack_is_empty(&st)) {
+        stack_top(&st, &node);
+        stack_pop_back(&st);
+        for (size_t i=0; i < node->depth; i++) {
+            printf(" ");
+        }         
+        printf(TREE_FORMAT_STR, node->value);
+        if (node->right)
+            stack_push_back(&st, node->right);
+        if (node->left)
+            stack_push_back(&st, node->left);
+    } 
+    stack_destroy(&st);
+}
+
+void tree_print_inorder(const tree * const tree) {
+    tree_node * node = tree->root;
+    stack st;
+    stack_create(&st);
+    while (!stack_is_empty(&st) || node) {
         if (node) {
             stack_push_back(&st, node);
-            node = node->left;
+            node = node->right;
         }
-        else if (stack_is_empty(&st)) 
-            done = true;
         else {
             stack_top(&st, &node);
             stack_pop_back(&st);
-            process(node);
-            node = node->right;
+            for (size_t i=0; i < node->depth; i++) {
+            printf(" ");
+            }         
+            printf(TREE_FORMAT_STR, node->value);
+            node = node->left;
         }
-    } 
-    stack_destroy(&st);
+    }
 }
 
 

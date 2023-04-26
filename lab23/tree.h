@@ -2,6 +2,7 @@
 #define _TREE_H_
 #include <stdbool.h>
 #include <stddef.h>
+#define TREE_FORMAT_STR "%.3f\n"
 
 typedef float tree_t; 
 
@@ -30,10 +31,10 @@ size_t tree_size(const tree * tree);
 
 void tree_destroy(tree * tree);
 
-void tree_preorder_traversal(const tree * tree, void (* process)(tree_node * node));
+void tree_print_inorder(const tree * tree);
 
-void tree_inorder_traversal(const tree * tree,void (* process)(tree_node * node));
+void tree_print_preorder(const tree * tree);
 
-void tree_postorder_traversal(const tree * tree, void (* process)(tree_node * node));
+void tree_print_postorder(const tree * tree);
 
 #endif // _TREE_H_

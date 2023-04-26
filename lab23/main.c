@@ -3,13 +3,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-static void indent_print(tree_node * const node){
-    for (size_t i=0; i< node->depth; i++) {
-        printf(" ");
-    }
-    printf("%f\n", node->value);
-}
-
 int main(void) {
     tree tr;
     tree_create(&tr);
@@ -17,7 +10,16 @@ int main(void) {
     printf("%d\n", tree_insert(&tr, 1));
     printf("%d\n", tree_insert(&tr, 4));
     printf("%d\n", tree_insert(&tr, 3));
-    printf("%d\n",tree_contains(&tr, 0.03));
-    tree_inorder_traversal(&tr, indent_print);
+    printf("%d\n", tree_insert(&tr, 6));
+    printf("%d\n", tree_insert(&tr, 9));
+    printf("%d\n", tree_insert(&tr, 0));
+    printf("%d\n", tree_insert(&tr, 1.5));
+    printf("%d\n", tree_insert(&tr, 2.9));
+    printf("------------\n");
+    tree_print_preorder(&tr);
+    printf("------------\n");
+    tree_print_inorder(&tr);
+    printf("------------\n");
+    tree_print_postorder(&tr);
     return 0;
 }
