@@ -8,7 +8,28 @@
 
 void tree_clear(tree * const tree) {
     tree->size=0;
-    /* non-recursive post-order */;
+    tree_node * node = tree->root;
+    tree_node * last_visited_node = NULL;
+    stack st;
+    stack_create(&st);
+    while(!stack_is_empty(&st) || node) {
+        if (node) {
+            stack_push_back(&st, node);
+            node = node->right;
+        }
+        else {
+            tree_node * top_node;
+            stack_top(&st, &top_node);
+            if (top_node->left && (last_visited_node != top_node->left))
+                node=top_node->left;
+            else {
+                free(node);
+                stack_top(&st, &last_visited_node);
+                stack_pop_back(&st);
+            }
+        }
+    }
+    stack_destroy(&st);
 }
 
 bool tree_contains(const tree * const tree, const tree_t value) {
