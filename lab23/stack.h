@@ -1,10 +1,10 @@
 #ifndef _STACK_H_
 #define _STACK_H_
+#include "tree.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include <tree.h>
 
-typedef tree_node stack_t;
+typedef  tree_node * stack_t;
 
 typedef struct {
     stack_t *data;

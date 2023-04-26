@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void tree_clear(tree * const tree) {
     tree->size=0;
@@ -75,7 +76,7 @@ int tree_insert(tree * const tree, const tree_t value) {
         node = *ptr;
         if (node->value > value)
             ptr = &node->left;
-        else if (node->value < value)
+        else if (node->value < value) 
             ptr = &node->right;
         else
             errno = EINVAL;
@@ -85,10 +86,17 @@ int tree_insert(tree * const tree, const tree_t value) {
     if (*ptr == NULL)
         return -1;
     ++tree->size;
+    if (!node) {
+        (*ptr)->depth = 0;
+    }
+    else {
+        (*ptr)->depth = node->depth+1;
+    }
     (*ptr)->parent = node;
     (*ptr)->left = NULL;
     (*ptr)->right = NULL;
     (*ptr)->value = value;
+    printf("%f\n",value);
     return 0;
 }
 
@@ -104,15 +112,23 @@ void tree_destroy(tree * const tree) {
     tree_clear(tree);
 }
 
-void tree_print_inorder_traversal(tree * const tree) {
+void tree_inorder_traversal(tree * const tree, void (* process)(tree_node * node)) {
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);
     bool done = false;
     while (!done) {
         if (node) {
-            
+            stack_push_back(&st, node);
+            node = node->left;
         }
+        else if (stack_is_empty(&st)) {
+            done = true;
+        }
+        stack_top(&st, &node);
+        stack_pop_back(&st);
+        process(node);
+        node = node->right;
     }
     stack_destroy(&st);
 }
