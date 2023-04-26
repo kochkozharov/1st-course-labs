@@ -114,7 +114,6 @@ void tree_destroy(tree * const tree) {
 }
 
 void tree_inorder_traversal(const tree * const tree, void (* const process)(tree_node * const node)) {
-    printf("lol");
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);

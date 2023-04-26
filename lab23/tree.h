@@ -32,7 +32,7 @@ void tree_destroy(tree * tree);
 
 void tree_preorder_traversal(const tree * tree, void (* process)(tree_node * node));
 
-void tree_inorder_traversal(const tree * tree, void (* process)(tree_node * node));
+void tree_inorder_traversal(const tree * tree,void (* process)(tree_node * node));
 
 void tree_postorder_traversal(const tree * tree, void (* process)(tree_node * node));
 

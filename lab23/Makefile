@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 RM=rm -fr
 CFLAGS=-Wall -Werror -Wextra -Wfatal-errors -Wpedantic -pedantic-errors -std=c18
 LDFLAGS=

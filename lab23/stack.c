@@ -7,9 +7,10 @@
 static size_t new_capacity(size_t capacity);
 
 int stack_top(const stack * const stack, stack_t * const value) {
-    if (stack->depth == 0)
+    if (stack->depth == 0) {
         errno = EINVAL;
         return -1;
+    }
     *value = stack->data[stack->depth - 1];
     return 0;
 }
@@ -53,9 +54,10 @@ int stack_push_back(stack * const stack, const stack_t value) {
 
 
 int stack_pop_back(stack * const stack) {
-    if (stack->depth == 0)
+    if (stack->depth == 0) {
         errno = EINVAL;
         return -1;
+    }
     --stack->depth;
     return 0;
 }
