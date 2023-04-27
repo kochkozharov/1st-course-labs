@@ -83,6 +83,7 @@ int tree_erase(tree * const tree, const tree_t value) {
         assert(node->right == NULL);
         *ptr = node->left;
         node->left->parent = node->parent;
+        
     } else if (node->right != NULL) {
         assert(node->left == NULL);
         *ptr = node->right;
@@ -111,12 +112,6 @@ int tree_insert(tree * const tree, const tree_t value) {
     if (*ptr == NULL)
         return -1;
     ++tree->size;
-    if (!node) {
-        (*ptr)->depth = 0;
-    }
-    else {
-        (*ptr)->depth = node->depth+1;
-    }
     (*ptr)->parent = node;
     (*ptr)->left = NULL;
     (*ptr)->right = NULL;
@@ -156,9 +151,6 @@ void tree_print_postorder(const tree * const tree) {
             if (top_node->left && (last_visited_node != top_node->left))
                 node=top_node->left;
             else {
-                for (size_t i=0; i < top_node->depth; i++) {
-                    printf(" ");
-                }         
                 printf(TREE_FORMAT_STR, top_node->value);
                 stack_top(&st, &last_visited_node);
                 stack_pop_back(&st);
@@ -167,7 +159,6 @@ void tree_print_postorder(const tree * const tree) {
     }
     stack_destroy(&st);
 }
-
 
 void tree_print_preorder(const tree * const tree) {
     if (tree_is_empty(tree)) {
@@ -180,10 +171,7 @@ void tree_print_preorder(const tree * const tree) {
     stack_push_back(&st,node);
     while (!stack_is_empty(&st)) {
         stack_top(&st, &node);
-        stack_pop_back(&st);
-        for (size_t i=0; i < node->depth; i++) {
-            printf(" ");
-        }         
+        stack_pop_back(&st);       
         printf(TREE_FORMAT_STR, node->value);
         if (node->right)
             stack_push_back(&st, node->right);
@@ -208,10 +196,7 @@ void tree_print_inorder(const tree * const tree) {
         }
         else {
             stack_top(&st, &node);
-            stack_pop_back(&st);
-            for (size_t i=0; i < node->depth; i++) {
-            printf(" ");
-            }         
+            stack_pop_back(&st);   
             printf(TREE_FORMAT_STR, node->value);
             node = node->left;
         }

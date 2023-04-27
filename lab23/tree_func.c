@@ -2,23 +2,20 @@
 #include "tree_func.h"
 #include "stack.h"
 
-size_t tree_depth(const tree * const tree)
+static size_t max_depth(const tree_node * const  node)
 {
-    if (tree_is_empty(tree)) return 0;
-    size_t max_depth = 0;
-    tree_node * node = tree->root;
-    stack st;
-    stack_create(&st);
-    stack_push_back(&st,node);
-    while (!stack_is_empty(&st)) {
-        stack_top(&st, &node);
-        stack_pop_back(&st);
-        max_depth = node->depth > max_depth ? node->depth : max_depth;
-        if (node->right)
-            stack_push_back(&st, node->right);
-        if (node->left)
-            stack_push_back(&st, node->left);
-    } 
-    stack_destroy(&st);
-    return max_depth;
+    if (node == NULL || (!node->left && !node->right))
+        return 0;
+    else {
+        size_t l_depth = max_depth(node->left);
+        size_t r_depth = max_depth(node->right);
+        if (l_depth > r_depth)
+            return l_depth + 1;
+        else
+            return r_depth + 1;
+    }
+}
+
+size_t tree_depth(const tree * const tree) {
+    return max_depth(tree->root);
 }

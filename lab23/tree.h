@@ -8,7 +8,6 @@ typedef float tree_t;
 
 typedef struct tree_node {
     struct tree_node * parent, * left, * right;
-    size_t depth;
     tree_t value;
 } tree_node;
 

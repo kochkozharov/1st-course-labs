@@ -11,15 +11,30 @@
 
 static void help() {
     printf(
-        "add n - добавить узел со значением n\n\
-        delete n - удалить узел со знгаченим n\n\
-        preorder - КЛП обход\n\
-        inorder - ЛКП обход\n\
-        postorder - ЛПК обход\n\
-        clear - уничтожить дерево\n\
-        depth - вывести глубину дерева\n\
-        quit - выход\n"
+        "add n - добавить узел со значением n\n"
+        "delete n - удалить узел со знгаченим n\n"
+        "preorder - КЛП обход\n"
+        "inorder - ЛКП обход\n"
+        "postorder - ЛПК обход\n"
+        "clear - уничтожить дерево\n"
+        "depth - вывести глубину дерева\n"
+        "quit - выход\n"
     );
+}
+
+static void example(tree * tree) {
+    tree_insert(tree, 8);
+    tree_insert(tree, 9);
+    tree_insert(tree, 1);
+    tree_insert(tree, 2);
+    tree_insert(tree, -2);
+    tree_insert(tree, 2.3);
+    tree_insert(tree, 10);
+    tree_insert(tree, 11);
+    tree_insert(tree, 10.5);
+    tree_insert(tree, 5);
+    tree_insert(tree, 0);
+    tree_insert(tree, 9.5);
 }
 
 int main(void) {
@@ -29,6 +44,7 @@ int main(void) {
     bool flag = true;
     while(flag){
         char str[32];
+        printf(">");
         fgets(str,32,stdin);
         char delim[] = " ";
         char * command = strtok(str, delim);
@@ -48,6 +64,8 @@ int main(void) {
                 tree_print_postorder(&tr);
             else if (strcmp(command, "help\n")==0)
                 help();
+            else if (strcmp(command, "ex\n")==0)
+                example(&tr);
             else if (strcmp(command, "clear\n")==0) {
                 tree_clear(&tr);
                 tree_create(&tr);
