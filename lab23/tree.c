@@ -23,7 +23,7 @@ void tree_clear(tree * const tree) {
             if (top_node->left && (last_visited_node != top_node->left))
                 node=top_node->left;
             else {
-                free(node);
+                free(top_node);
                 stack_top(&st, &last_visited_node);
                 stack_pop_back(&st);
             }

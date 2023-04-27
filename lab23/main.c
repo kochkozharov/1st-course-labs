@@ -1,5 +1,6 @@
 #include "tree.h"
 #include "stack.h"
+#include "tree_func.h"
 #include <stdio.h>
 #include <errno.h>
 
@@ -21,5 +22,9 @@ int main(void) {
     tree_print_inorder(&tr);
     printf("------------\n");
     tree_print_postorder(&tr);
+    printf("%ld\n",tree_depth(&tr));
+    tree_destroy(&tr);
+    tree_create(&tr);
+    printf("%d\n",tree_contains(&tr, 8));
     return 0;
 }

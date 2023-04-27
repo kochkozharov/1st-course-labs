@@ -17,6 +17,8 @@ typedef struct {
     size_t size;
 } tree;
 
+bool tree_is_empty(const tree * tree);
+
 void tree_clear(tree * tree);
 
 bool tree_contains(const tree * tree, tree_t value);

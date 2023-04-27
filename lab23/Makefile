@@ -3,7 +3,7 @@ RM=rm -fr
 CFLAGS=-Wall -Werror -Wextra -Wfatal-errors -Wpedantic -pedantic-errors -std=c18
 LDFLAGS=
 LDLIBS=
-SOURCES=stack.c tree.c main.c
+SOURCES=stack.c tree.c main.c tree_func.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=main
 
