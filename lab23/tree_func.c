@@ -1,6 +1,6 @@
-#include "tree.h"
 #include "tree_func.h"
-#include "stack.h"
+#include "tree.h"
+
 
 static size_t max_depth(const tree_node * const  node)
 {

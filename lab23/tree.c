@@ -44,6 +44,24 @@ bool tree_contains(const tree * const tree, const tree_t value) {
     }
     return false;
 }
+//static because UB when value is not in tree
+static size_t tree_node_depth(const tree * const tree, const tree_t value) {
+    tree_node *node = tree->root;
+    size_t depth = 0;
+    while (node != NULL || (!tree->root->right && !tree->root->left)) {
+        if (node->value > value) {
+            depth++;
+            node = node->left;
+        }
+        else if (node->value < value) {
+            depth++;
+            node = node->right;
+        }
+        else
+            return depth;
+    }
+    return 0;
+}
 
 void tree_create(tree * const tree) {
     tree->root = NULL;
@@ -151,6 +169,7 @@ void tree_print_postorder(const tree * const tree) {
             if (top_node->left && (last_visited_node != top_node->left))
                 node=top_node->left;
             else {
+                for(size_t i=0;i<tree_node_depth(tree,top_node->value);i++) printf(" ");
                 printf(TREE_FORMAT_STR, top_node->value);
                 stack_top(&st, &last_visited_node);
                 stack_pop_back(&st);
@@ -171,7 +190,8 @@ void tree_print_preorder(const tree * const tree) {
     stack_push_back(&st,node);
     while (!stack_is_empty(&st)) {
         stack_top(&st, &node);
-        stack_pop_back(&st);       
+        stack_pop_back(&st);
+        for(size_t i=0;i<tree_node_depth(tree,node->value);i++) printf(" ");
         printf(TREE_FORMAT_STR, node->value);
         if (node->right)
             stack_push_back(&st, node->right);
@@ -196,7 +216,8 @@ void tree_print_inorder(const tree * const tree) {
         }
         else {
             stack_top(&st, &node);
-            stack_pop_back(&st);   
+            stack_pop_back(&st);
+            for(size_t i=0;i<tree_node_depth(tree,node->value);i++) printf(" ");
             printf(TREE_FORMAT_STR, node->value);
             node = node->left;
         }
