@@ -58,10 +58,12 @@ int tree_erase(tree * const tree, const tree_t value) {
             ptr = &node->left;
         else if (node->value < value)
             ptr = &node->right;
-        else
+        else {
             break;
+        }
     }
-    if (node == NULL) {
+
+    if (*ptr == NULL) {
         errno = EINVAL;
         return -1;
     }
@@ -135,6 +137,10 @@ void tree_destroy(tree * const tree) {
 }
 
 void tree_print_postorder(const tree * const tree) {
+    if (tree_is_empty(tree)) {
+        printf("EMPTY\n");
+        return;
+    }
     tree_node * node = tree->root;
     tree_node * last_visited_node = NULL;
     stack st;
@@ -164,6 +170,10 @@ void tree_print_postorder(const tree * const tree) {
 
 
 void tree_print_preorder(const tree * const tree) {
+    if (tree_is_empty(tree)) {
+        printf("EMPTY\n");
+        return;
+    }
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);
@@ -184,6 +194,10 @@ void tree_print_preorder(const tree * const tree) {
 }
 
 void tree_print_inorder(const tree * const tree) {
+    if (tree_is_empty(tree)) {
+        printf("EMPTY\n");
+        return;
+    }
     tree_node * node = tree->root;
     stack st;
     stack_create(&st);
