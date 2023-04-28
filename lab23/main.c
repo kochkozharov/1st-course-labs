@@ -12,7 +12,7 @@
 static void help() {
     printf(
         "add n - добавить узел со значением n\n"
-        "delete n - удалить узел со знгаченим n\n"
+        "delete n - удалить узел со значеним n\n"
         "preorder - КЛП обход\n"
         "inorder - ЛКП обход\n"
         "postorder - ЛПК обход\n"
