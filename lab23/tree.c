@@ -85,7 +85,6 @@ int tree_erase(tree * const tree, const tree_t value) {
         errno = EINVAL;
         return -1;
     }
-
     assert(node->value == value);
     if (node->left != NULL && node->right != NULL) {
         tree_t * const value = &node->value;
@@ -100,12 +99,9 @@ int tree_erase(tree * const tree, const tree_t value) {
     if (node->left != NULL) {
         assert(node->right == NULL);
         *ptr = node->left;
-        node->left->parent = node->parent;
-        
     } else if (node->right != NULL) {
         assert(node->left == NULL);
         *ptr = node->right;
-        node->right->parent = node->parent;
     } else
         *ptr = NULL;
     free(node);
@@ -130,7 +126,6 @@ int tree_insert(tree * const tree, const tree_t value) {
     if (*ptr == NULL)
         return -1;
     ++tree->size;
-    (*ptr)->parent = node;
     (*ptr)->left = NULL;
     (*ptr)->right = NULL;
     (*ptr)->value = value;
