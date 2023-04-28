@@ -46,15 +46,26 @@ int main(void) {
         char str[32];
         printf(">");
         fgets(str,32,stdin);
+        
         char delim[] = " ";
+        
         char * command = strtok(str, delim);
+        
         if (command) {
-            char * key = strtok(NULL, delim);
-            if (strcmp(command, "add")==0 && key) {
-                if (tree_insert(&tr, atof(key))) perror("");
+            char *key = strtok(NULL, delim);
+            char *err_ptr;
+            float f_key;
+            if (key) {
+                f_key = strtof(key, &err_ptr);
             }
-            else if (strcmp(command, "delete")==0 && key) {
-                if (tree_erase(&tr, atof(key))) perror("");
+            else {
+                err_ptr=NULL;
+            }
+            if (strcmp(command, "add")==0 && key && err_ptr && *err_ptr == '\n') {
+                if (tree_insert(&tr, f_key)) perror("");
+            }
+            else if (strcmp(command, "delete")==0 && key && err_ptr &&*err_ptr == '\n') {
+                if (tree_erase(&tr, f_key)) perror("");
             }
             else if (strcmp(command, "preorder\n")==0)
                 tree_print_preorder(&tr);
