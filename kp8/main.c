@@ -17,4 +17,23 @@ int main(void) {
     for(ListIterator it = listIteratorBegin(&a), end=listIteratorEnd(&a);listIteratorNotEqual(&it, &end);listIteratorNext(&it)) {
         printf("%c\n", *(char*)listIteratorGet(&it));
     }
+    printf("\n");
+    ListIterator it = listIteratorBegin(&a);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+    listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+        listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+        listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+        listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+        listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+            listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+            listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
+                listIteratorNext(&it);
+    printf("%c\n", *(char*)listIteratorGet(&it));
 }
