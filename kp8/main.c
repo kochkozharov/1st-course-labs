@@ -12,13 +12,12 @@ int main(void) {
     listPushFront(&a, &(char){'w'});
     listPushBack(&a, &(char){'p'});
 
-
-
     for(ListIterator it = listIteratorBegin(&a), end=listIteratorEnd(&a);listIteratorNotEqual(&it, &end);listIteratorNext(&it)) {
         printf("%c\n", *(char*)listIteratorGet(&it));
     }
     printf("\n");
     ListIterator it = listIteratorBegin(&a);
+    listIteratorSet(&it,&(char){'A'});
     printf("%c\n", *(char*)listIteratorGet(&it));
     listIteratorNext(&it);
     printf("%c\n", *(char*)listIteratorGet(&it));
@@ -31,7 +30,7 @@ int main(void) {
         listIteratorNext(&it);
     printf("%c\n", *(char*)listIteratorGet(&it));
             listIteratorNext(&it);
-    printf("%c\n", *(char*)listIteratorGet(&it));
+    if(listIteratorGet(&it)) printf("%c\n", *(char*)listIteratorGet(&it));
             listIteratorNext(&it);
     printf("%c\n", *(char*)listIteratorGet(&it));
                 listIteratorNext(&it);

@@ -16,7 +16,7 @@ typedef struct {
 
 typedef struct  {
     ListNode *node;
-    size_t data_size;
+    List *list;
 } ListIterator;
 
 void *listFront(const List *list);
@@ -41,7 +41,7 @@ ListIterator *listIteratorNext(ListIterator *listIterator);
 
 void *listIteratorGet(const ListIterator *listIterator);
 
-int listIteratorSet(ListIterator *listIterator, size_t size);
+int listIteratorSet(ListIterator *listIterator, const void *src);
 
 bool listIteratorEqual(const ListIterator *it1, const ListIterator *it2);
 

@@ -5,9 +5,6 @@
 #include "list.h"
 
 int listCreate(List * const list, size_t data_size) { //create terminator
-    if (!list) {
-        exit(EXIT_FAILURE);
-    }
     list->head = malloc(sizeof(ListNode)+sizeof(ListNode*));
     if (!list->head) return -1;
     list->head->next=list->head;
@@ -18,9 +15,6 @@ int listCreate(List * const list, size_t data_size) { //create terminator
 }
 
 bool listIsEmpty(const List * const list) {
-    if (!list) {
-        exit(EXIT_FAILURE);
-    }
     return list->count == 0;    
 }
 
@@ -29,9 +23,6 @@ size_t listSize(const List * const list) {
 }
 
 int listPushFront(List * const list, const void * const src) {
-    if (list == NULL || src == NULL) {
-        exit(EXIT_FAILURE);
-    }
     ListNode *temp = malloc(sizeof(ListNode)+list->data_size);
     if (!temp) return -1;
     memcpy(temp->data, src, list->data_size);
@@ -43,9 +34,6 @@ int listPushFront(List * const list, const void * const src) {
 }
 
 int listPushBack(List * const list, const void * const src) {
-    if (list == NULL || src == NULL) {
-        exit(EXIT_FAILURE); 
-    }
     ListNode *temp = malloc(sizeof(ListNode)+list->data_size);
     if (!temp) return -1;
     temp->next = list->head;
@@ -58,39 +46,38 @@ int listPushBack(List * const list, const void * const src) {
     return 0;
 }
 
+
+
 ListIterator listIteratorBegin(const List * const list) {
-    if (list == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-    return (ListIterator) { .node = list->head->next, .data_size = list->data_size};
+    return (ListIterator) { .node = list->head->next, .list = (List *) list};
 }
 
 ListIterator listIteratorEnd(const List * const list) {
-    if (list == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-    return (ListIterator) { .node=list->head };
+    return (ListIterator) { .node=list->head, .list = (List *) list};
 }
 
 ListIterator *listIteratorNext(ListIterator *it) {
-    if (it == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
 	it->node = it->node->next;
     return it;
 }
 
 void *listIteratorGet(const ListIterator * const  it) {
-    if (it == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-    void *out = malloc(it->data_size);
-    memcpy(out, it->node->data, it->data_size);
+    if (it->node == it->list->head) {
+        errno = EINVAL;
+        return NULL;
+    }
+    void *out = malloc(it->list->data_size);
+    memcpy(out, it->node->data, it->list->data_size);
     return out;
+}
+
+int listIteratorSet(ListIterator * const  it, const void * const src) { //unsafe, break list when set value of terminator
+    if (it->node == it->list->head) {
+        errno = EINVAL;
+        return -1;
+    }
+    memcpy(it->node->data, src, it->list->data_size);
+    return 0;
 }
 
 bool listIteratorEqual(const ListIterator *it1, const ListIterator *it2) {
