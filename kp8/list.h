@@ -10,15 +10,16 @@ typedef struct ListNode {
 
 typedef struct {
     ListNode *head;
-    ListNode *tail; //for fast push_back
     size_t size;
 } List;
 
 typedef struct  {
-    ListNode *ptr;
+    ListNode *node;
 } ListIterator;
 
 void *listFront(const List *list);
+
+void *listBack(const List *list);
 
 void listClear(List *list);
 
@@ -26,23 +27,27 @@ int listCreate(List *list);
 
 bool listIsEmpty(const List *list);
 
-ListIterator listIteratorBeforeBegin(List *list);
-
 ListIterator listIteratorBegin(List *list);
 
 ListIterator listIteratorEnd(List *list);
 
 int listInsertAfter(List *list, ListIterator *listIterator, void *value);
 
-int listErase(List *list, ListIterator *listIterator);
+void listErase(List *list, ListIterator *listIterator);
 
-ListIterator listIteratorNext(const ListIterator *listIterator);
+void listIteratorNext(const ListIterator *listIterator);
 
-int listIteratorGet(const ListIterator *listIterator);
+void *listIteratorGet(const ListIterator *listIterator);
 
-void listIteratorSet(ListIterator *listIterator);
+int listIteratorSet(ListIterator *listIterator);
 
-int listPopFront(List *list);
+bool listIteratorEqual(const ListIterator *it1, const ListIterator *it2);
+
+bool listIteratorNotEqual(const ListIterator *it1, const ListIterator *it2);
+
+void listPopFront(List *list);
+
+void listPopBack(List *list);
 
 int listPushFront(List *list, const void *src, const size_t size);
 
@@ -52,4 +57,5 @@ size_t listSize(const List *list);
 
 void listDestroy(List *list);
 
+void listReverse(List *list);
 #endif //_LIST_H_
