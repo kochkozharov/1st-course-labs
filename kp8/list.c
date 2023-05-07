@@ -35,9 +35,7 @@ int listPushFront(List * const list, const void * const src) {
     ListNode *temp = malloc(sizeof(ListNode)+list->data_size);
     if (!temp) return -1;
     memcpy(temp->data, src, list->data_size);
-    if (list->count == 0) {memcpy(list->head->data,&temp,sizeof(ListNode*));
-    printf("yes");
-    }
+    if (list->count == 0) memcpy(list->head->data,&temp,sizeof(ListNode*));
     temp->next = list->head->next;
     list->head->next = temp;
     ++list->count;
