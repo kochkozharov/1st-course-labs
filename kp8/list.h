@@ -49,8 +49,6 @@ bool listIteratorNotEqual(const ListIterator *it1, const ListIterator *it2);
 
 int listPopFront(List *list);
 
-int listPopBack(List *list);
-
 int listPushFront(List *list, const void *src);
 
 int listPushBack(List *list, const void *src);

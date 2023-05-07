@@ -55,7 +55,6 @@ int listPopFront(List * const list) {
         free(list->head->next);
         list->head->next=list->head;
         memcpy(list->head->data,&(list->head), sizeof(ListNode*));
-        --list->count;
     }
     else {
         ListNode *temp = list->head->next->next;
@@ -63,27 +62,11 @@ int listPopFront(List * const list) {
         list->head->next = temp;
     }
     --list->count;
+    return 0;
 }
-/*
-int listPopBack(List * const list) {
-    if (list->count == 0) {
-        errno = EINVAL;
-        return -1;
-    }
-    else if (list->count == 1) {
-        free(list->head->next);
-        list->head->next=list->head;
-        memcpy(list->head->data,&(list->head), sizeof(ListNode*));
-        --list->count;
-    }
-    else {
-        ListNode *temp = list->head->next->next;
-        free(list->head->next);
-        list->head->next = temp;
-    }
-    --list->count;
-}
-*/
+
+//int listPopBack(List *list); cannot be O(1) in singly-linked list...
+
 ListIterator listIteratorBegin(const List * const list) {
     return (ListIterator) { .node = list->head->next, .list = (List *) list};
 }
