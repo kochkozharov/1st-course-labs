@@ -4,7 +4,7 @@
 #include <string.h>
 #include "list.h"
 
-int listCreate(List * const list, size_t data_size) { //create terminator
+int listCreate(List * const list, const size_t data_size) { //create terminator
     list->head = malloc(sizeof(ListNode)+sizeof(ListNode*));
     if (!list->head) return -1;
     list->head->next=list->head;
@@ -75,7 +75,7 @@ ListIterator listIteratorEnd(const List * const list) {
     return (ListIterator) { .node=list->head, .list = (List *) list};
 }
 
-ListIterator *listIteratorNext(ListIterator *it) {
+ListIterator *listIteratorNext(ListIterator * const it) {
 	it->node = it->node->next;
     return it;
 }
@@ -99,11 +99,11 @@ int listIteratorSet(ListIterator * const  it, const void * const src) {
     return 0;
 }
 
-bool listIteratorEqual(const ListIterator *it1, const ListIterator *it2) {
+bool listIteratorEqual(const ListIterator * const it1, const ListIterator * const it2) {
     return it1->node == it2->node;
 }
 
-bool listIteratorNotEqual(const ListIterator *it1, const ListIterator *it2) {
+bool listIteratorNotEqual(const ListIterator * const it1, const ListIterator * const it2) {
     return it1->node != it2->node;
 }
 
@@ -126,7 +126,7 @@ int listInsertAfter(ListIterator * const it, const void * const src) {
     return 0;
 }
 
-int listEraseAfter(ListIterator *it) {
+int listEraseAfter(ListIterator * const it) {
     if (it->node->next == it->list->head) {
         errno = EINVAL;
         return -1;
@@ -139,4 +139,58 @@ int listEraseAfter(ListIterator *it) {
     free(temp);
     --it->list->count;
     return 0;
+}
+
+void listDestroy(List * const list) {
+    ListNode *node = list->head->next;
+    while (node != list->head) {
+        ListNode *temp=node->next;
+        free(node);
+        node = temp;
+    }
+    free(node);
+    list->count=0;
+    list->data_size=0;
+    list->head=NULL;
+}
+
+void listClear(List * const list) {
+    ListNode *node = list->head->next;
+    while (node != list->head) {
+        ListNode *temp=node->next;
+        free(node);
+        node = temp;
+    }
+    list->head=node;
+    memcpy(list->head->data,&(list->head), sizeof(ListNode*));
+    list->head->next=list->head;
+    list->count=0;
+}
+
+void *listFront(const List * const list) {
+    if (list->count ==0) return NULL;
+    return list->head->next->data;
+}
+
+void *listBack(const List * const list) {
+    if (list->count ==0) return NULL;
+    ListNode *last_node;
+    memcpy(&last_node, list->head->data, sizeof(ListNode *));
+    return last_node->data;
+}
+
+void listReverse(List * const list) {
+    if (list->count <= 1) return;
+    ListNode *temp=list->head->next;
+    ListNode *prev=list->head;
+    ListNode *last_node;
+    memcpy(&last_node, list->head->data, sizeof(ListNode *));
+    memcpy(list->head->data, &list->head->next,sizeof(ListNode *));
+    list->head->next=last_node;
+    while (temp !=list->head) {
+        ListNode *temp2=temp->next;
+        temp->next=prev;
+        prev=temp;
+        temp=temp2;
+    }
 }

@@ -3,17 +3,24 @@
 int main(void) {
     List a;
     listCreate(&a, sizeof(char));
-    listPushFront(&a, &(char){'j'});
+    listPushFront(&a, &(char){'G'});
     listPushFront(&a, &(char){'a'});
     listPushFront(&a, &(char){'j'});
     listPushBack(&a, &(char){'q'});
     listPushFront(&a, &(char){'w'});
     listPushBack(&a, &(char){'p'});
-    listPopFront(&a);
     for(ListIterator it = listIteratorBegin(&a), end=listIteratorEnd(&a);listIteratorNotEqual(&it, &end);listIteratorNext(&it)) {
         PRINT_ITERATOR("%c\n", char, it);
     }
-    printf("\n");
+    printf("reverse:\n");
+    listReverse(&a);
+    for(ListIterator it = listIteratorBegin(&a), end=listIteratorEnd(&a);listIteratorNotEqual(&it, &end);listIteratorNext(&it)) {
+        PRINT_ITERATOR("%c\n", char, it);
+    }
+    printf("back and front\n");
+    printf("%c\n",*(char*)listFront(&a));
+    printf("%c\n",*(char*)listBack(&a));
+    printf("work with iterators\n");
     ListIterator it = listIteratorBegin(&a);
     listIteratorSet(&it,&(char){'A'});
     PRINT_ITERATOR("%c\n", char, it);
@@ -36,4 +43,5 @@ int main(void) {
     PRINT_ITERATOR("%c\n", char, it);
     listIteratorNext(&it);
     PRINT_ITERATOR("%c\n", char, it);
+    listDestroy(&a);
 }
