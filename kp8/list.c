@@ -90,7 +90,7 @@ void *listIteratorGet(const ListIterator * const  it) {
     return out;
 }
 
-int listIteratorSet(ListIterator * const  it, const void * const src) { //unsafe, break list when set value of terminator
+int listIteratorSet(ListIterator * const  it, const void * const src) { 
     if (it->node == it->list->head) {
         errno = EINVAL;
         return -1;
@@ -105,4 +105,38 @@ bool listIteratorEqual(const ListIterator *it1, const ListIterator *it2) {
 
 bool listIteratorNotEqual(const ListIterator *it1, const ListIterator *it2) {
     return it1->node != it2->node;
+}
+
+int listInsertAfter(ListIterator * const it, const void * const src) {
+    ListNode *temp = malloc(sizeof(ListNode)+it->list->data_size);
+    if (!temp) return -1;
+    if (it->node->next == it->list->head) { //pushBack copy paste
+        temp->next = it->list->head;
+        ListNode *last_node;
+        memcpy(&last_node, it->list->head->data, sizeof(ListNode *));
+        last_node->next=temp;
+        memcpy(it->list->head->data,&temp, sizeof(ListNode*)); 
+    }
+    else {
+        temp->next = it->node->next;
+        it->node->next = temp;
+    }
+    memcpy(temp->data, src, it->list->data_size);
+    ++it->list->count;
+    return 0;
+}
+
+int listEraseAfter(ListIterator *it) {
+    if (it->node->next == it->list->head) {
+        errno = EINVAL;
+        return -1;
+    }
+    if (it->node->next->next == it->list->head) {
+        memcpy(it->list->head->data,&it->node, sizeof(ListNode*)); 
+    }
+    ListNode *temp = it->node->next;
+    it->node->next = temp->next;
+    free(temp);
+    --it->list->count;
+    return 0;
 }
