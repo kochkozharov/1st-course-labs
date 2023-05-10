@@ -1,5 +1,4 @@
-CC=gcc
-RM=rm -rf
+CC=clang
 CFLAGS=-Wall -Werror -Wextra -Wfatal-errors -Wpedantic -pedantic-errors -std=c18
 LDFLAGS=
 LDLIBS=
@@ -16,6 +15,8 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) *.o $(EXECUTABLE)
+	rm -rf *.o $(EXECUTABLE)
 
 debug: CFLAGS+=-Og -g
+
+.PHONY: all debug clean
