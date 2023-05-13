@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#define PRINT_LIST_ITERATOR(printf_str, type, it) if(listIteratorGet(&it)) printf(printf_str, *(type*)listIteratorGet(&it)); else perror("")
+#define PRINT_LIST_ITERATOR(printf_str, type, it) if(listIteratorGet(&it)) {printf(printf_str, *(type*)listIteratorGet(&it));} else {perror("");}
 
 typedef struct ListNode {
     struct ListNode *next;
