@@ -3,7 +3,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#define PRINT_LIST_ITERATOR(printf_str, type, it) if(listIteratorGet(&it)) {printf(printf_str, *(type*)listIteratorGet(&it));} else {perror("");}
+#define PRINT_LIST_ITERATOR(printf_str, type, it) {\
+    type value; if(listIteratorGet(&it,&value)==0) printf(printf_str, value); else perror("");\
+}
 
 typedef struct ListNode {
     struct ListNode *next;
@@ -41,7 +43,7 @@ int listEraseAfter(ListIterator *listIterator);
 
 ListIterator *listIteratorNext(ListIterator *listIterator);
 
-void *listIteratorGet(const ListIterator *listIterator);
+int listIteratorGet(const ListIterator * const  it, void * const value);
 
 int listIteratorSet(ListIterator *listIterator, const void *src);
 

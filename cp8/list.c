@@ -79,14 +79,13 @@ ListIterator *listIteratorNext(ListIterator * const it) {
     return it;
 }
 
-void *listIteratorGet(const ListIterator * const  it) {
+int listIteratorGet(const ListIterator * const  it, void * const value) {
     if (it->node == it->list->head) {
         errno = EINVAL;
-        return NULL;
+        return -1;
     }
-    void *out = malloc(it->list->data_size);
-    memcpy(out, it->node->data, it->list->data_size);
-    return out;
+    memcpy(value, it->node->data, it->list->data_size);
+    return 0;
 }
 
 int listIteratorSet(ListIterator * const  it, const void * const src) { 
