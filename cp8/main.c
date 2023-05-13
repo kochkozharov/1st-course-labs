@@ -25,6 +25,7 @@ int main(void) {
     for(ListIterator it = listIteratorBegin(&a), end=listIteratorEnd(&a);listIteratorNotEqual(&it, &end);listIteratorNext(&it)) {
         PRINT_LIST_ITERATOR("%c\n", char, it);
     }
+    printf("-----------------\n");
     printf("back and front\n");
     printf("%c\n",*(char*)listFront(&a));
     printf("%c\n",*(char*)listBack(&a));

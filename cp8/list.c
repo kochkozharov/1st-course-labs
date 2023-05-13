@@ -79,13 +79,12 @@ ListIterator *listIteratorNext(ListIterator * const it) {
     return it;
 }
 
-int listIteratorGet(const ListIterator * const  it, void * const value) {
+const void *listIteratorGet(const ListIterator * const  it) {
     if (it->node == it->list->head) {
         errno = EINVAL;
-        return -1;
+        return NULL;
     }
-    memcpy(value, it->node->data, it->list->data_size);
-    return 0;
+    return it->node->data;
 }
 
 int listIteratorSet(ListIterator * const  it, const void * const src) { 
@@ -165,12 +164,12 @@ void listClear(List * const list) {
     list->count=0;
 }
 
-void *listFront(const List * const list) {
+const void *listFront(const List * const list) {
     if (list->count ==0) return NULL;
     return list->head->next->data;
 }
 
-void *listBack(const List * const list) {
+const void *listBack(const List * const list) {
     if (list->count ==0) return NULL;
     ListNode *last_node;
     memcpy(&last_node, list->head->data, sizeof(ListNode *));
