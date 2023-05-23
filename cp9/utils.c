@@ -1,6 +1,5 @@
 #include <stddef.h>
-
-#include "binary_search.h"
+#include "utils.h"
 
 static inline void *ptrOffset(
     const void * const ptr,
@@ -45,6 +44,27 @@ void *binarySearch(
             return (void *) ptr;
     }
     return NULL;
+}
+
+void *lowerBound(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+) {
+    while (length != 0U) {
+        const size_t index = length >> 1U;
+        void * const middle = elemAt(array, index, size);
+        const int result = compare(key, middle);
+        if (result <= 0)
+            length = index;
+        else {
+            array = ptrIncrement(middle, size);
+            length -= index + 1U;
+        }
+    }
+    return (void *) array;
 }
 
 /*

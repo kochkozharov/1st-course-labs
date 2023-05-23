@@ -86,5 +86,11 @@ int main(void){
         printf("%d ",v);
     }
     printf("\n");
+    deque_destroy(a);
+    deque_destroy(b);
+    deque_destroy(c);
+    deque_destroy(d);
+    deque_destroy(g);
+    deque_destroy(q);
     return 0;
 }
