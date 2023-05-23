@@ -17,10 +17,6 @@ size_t vectorCapacity(const Vector * const vector) {
     return vector->capacity;
 }
 
-void vectorClear(Vector * const vector) {
-    vector->size = 0;
-}
-
 void vectorCreate(Vector * vector) {
     vector->data = NULL;
     vector->capacity = vector->size = 0;
@@ -31,6 +27,9 @@ T *vectorData(const Vector * const vector) {
 }
 
 void vectorDestroy(Vector * const vector) {
+    for (size_t i=0; i<vector->size;++i){
+        free(vector->data[i]);
+    }
     free(vector->data);
 }
 

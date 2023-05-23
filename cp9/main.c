@@ -51,18 +51,15 @@ int main(void){
         }
         if (!comma_is_found) exit(EXIT_FAILURE);
         size_t val_size = strlen(val)+1;
-        printf("%ld\n",val_size);
-        /*
+        char *key = str;
         Data *line = malloc(sizeof(Data)+val_size);
         memset(line->key,0,KEY_SIZE);
-        for (size_t j=0; j<i;++j) {
-            line->key[j]=key[i];
-        }
+        memcpy(line->key,key,strlen(key));
         memcpy(line->value,val,val_size);
         vectorPushBack(&table, line);
-        */
         free(str);
     }
+    vectorDestroy(&table);
     return 0;
 }
 // _ _ _ _ _
