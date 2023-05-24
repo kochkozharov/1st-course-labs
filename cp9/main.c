@@ -4,6 +4,7 @@
 #include "vector.h"
 #include "utils.h"
 #include "string.h"
+#include "data.h"
 
 static char *inputString(FILE* fp){
     size_t size = 16;
@@ -31,11 +32,13 @@ static char *inputString(FILE* fp){
 }
 
 int main(void){
-    Vector table;
-    vectorCreate(&table);
+    FILE *table_txt=fopen("table.txt","r");
+    if (!table_txt) exit(EXIT_FAILURE);
+    Vector vtable;
+    vectorCreate(&vtable);
     char *str;
     for (;;) {
-        str = inputString(stdin);
+        str = inputString(table_txt);
         if (!str) break;
         char *val;
         size_t i = 0;
@@ -50,16 +53,61 @@ int main(void){
             ++i;
         }
         if (!comma_is_found) exit(EXIT_FAILURE);
-        size_t val_size = strlen(val)+1;
         char *key = str;
+        size_t val_size = strlen(val)+1;
+        size_t real_key_size = strlen(key)+1;
         Data *line = malloc(sizeof(Data)+val_size);
-        memset(line->key,0,KEY_SIZE);
-        memcpy(line->key,key,strlen(key));
+        memcpy(line->key,key,real_key_size);
         memcpy(line->value,val,val_size);
-        vectorPushBack(&table, line);
+        vectorPushBack(&vtable, line);
         free(str);
     }
-    vectorDestroy(&table);
+    fclose(table_txt);
+
+    Data ** table = vectorData(&vtable);
+    /*
+    bool is_sorted = true;
+    for (size_t i =1; i < vectorSize(&vtable);++i) {
+        if (cmpData(table[i],table[i-1]) < 0) {
+            is_sorted = false;
+            break;
+        }
+    }
+
+    bool is_reverse_sorted = true;
+    for (size_t i =1; i < vectorSize(&vtable);++i) {
+        if (cmpData(table[i],table[i-1]) > 0) {
+            is_reverse_sorted = false;
+            break;
+        }
+    }
+    */
+    for (size_t i=0;i < vectorSize(&vtable);++i){
+        printf("%s %s\n",table[i]->key,table[i]->value);
+    }
+    /*
+    if (is_reverse_sorted) {
+        vectorReverse(&vtable);
+    }
+    else if (!is_reverse_sorted && !is_sorted) {
+        qsort(table,vectorCapacity(&vtable),sizeof(Data *), cmpData);
+    }
+
+    for (size_t i=0;i < vectorSize(&vtable);++i){
+        printf("%s %s\n",table[i]->key,table[i]->value);
+    }
+    for (;;) {
+        str = inputString(stdin);
+        if (!str) break;
+        Data **ptr = binarySearch(str,table,vectorSize(&vtable),sizeof(Data*),cmpData);
+        if (!ptr) {printf("not found\n");}
+        else {
+            printf("%s %s\n",(*ptr)->key,(*ptr)->value);
+        }
+        free(str);
+    }
+    */
+    vectorDestroy(&vtable);
+    
     return 0;
 }
-// _ _ _ _ _

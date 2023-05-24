@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include "data.h"
 
-typedef Data *T;
+typedef Data * T;
 
 typedef struct {
     T *data;
@@ -15,8 +15,6 @@ typedef struct {
 int vectorBack(const Vector *vector, T *value);
 
 size_t vectorCapacity(const Vector *vector);
-
-void vectorClear(Vector *vector);
 
 void vectorCreate(Vector *vector);
 
@@ -31,6 +29,8 @@ int vectorPopBack(Vector *vector);
 int vectorPushBack(Vector *vector, T value);
 
 int vectorResize(Vector *vector, size_t newSize, T value);
+
+void vectorReverse(Vector * const vector);
 
 int vectorSet(Vector *vector, size_t index, T value);
 

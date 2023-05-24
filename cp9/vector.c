@@ -94,6 +94,14 @@ int vectorResize(Vector * const vector, const size_t newSize, const T value) {
     return 0;
 }
 
+void vectorReverse(Vector * const vector) {
+    for (size_t i =0 ; i < vector->size/2; ++i) {
+        T temp = vector->data[i];
+        vector->data[i] = vector->data[vector->size-i-1];
+        vector->data[vector->size-i-1] = temp;
+    }
+}
+
 int vectorSet(Vector * const vector, const size_t index, const T value) {
     if (vector->size <= index)
         return EINVAL;
