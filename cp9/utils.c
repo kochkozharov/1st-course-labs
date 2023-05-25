@@ -1,4 +1,7 @@
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h> //test!
 #include "utils.h"
 
 static inline void *ptrOffset(
@@ -44,6 +47,20 @@ void *binarySearch(
             return (void *) ptr;
     }
     return NULL;
+}
+
+void reverse(
+    const void *array,
+    size_t length,
+    const size_t size
+) {
+    for (size_t i = 0 ; i < length>>1; ++i) {
+        void *temp = malloc(size);
+        memcpy(temp,elemAt(array, i, size),size);
+        memcpy(elemAt(array, i, size),elemAt(array, length-i-1, size),size);
+        memcpy(elemAt(array, length-i-1, size),temp,size);
+        free(temp);
+    }
 }
 
 void *lowerBound(

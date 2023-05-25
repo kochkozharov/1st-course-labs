@@ -65,6 +65,7 @@ int main(void){
     fclose(table_txt);
 
     Data ** table = vectorData(&vtable);
+    size_t lines_count = vectorSize(&vtable);
     /*
     bool is_sorted = true;
     for (size_t i =1; i < vectorSize(&vtable);++i) {
@@ -82,9 +83,24 @@ int main(void){
         }
     }
     */
-    for (size_t i=0;i < vectorSize(&vtable);++i){
+    for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
+    qsort(table,lines_count,sizeof(Data*),cmpData);
+    printf("---------\n");
+    for (size_t i=0;i < lines_count;++i){
+        printf("%s %s\n",table[i]->key,table[i]->value);
+    }
+    printf("---------\n");
+    for (;;) {
+        str = inputString(stdin);
+        if (!str) break;
+        Data **res = binarySearch(&str,table,lines_count,sizeof(Data*),cmpKeyWithData);
+        if (!res) printf("N/A\n");
+        else printf("%s %s\n", (*res)->key,(*res)->value);
+        free(str);
+    }
+    
     /*
     if (is_reverse_sorted) {
         vectorReverse(&vtable);
