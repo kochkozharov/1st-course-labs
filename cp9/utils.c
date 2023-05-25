@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h> //test!
+#include <stdbool.h>
 #include "utils.h"
 
 static inline void *ptrOffset(
@@ -26,8 +26,8 @@ static inline void *elemAt(
 ) {
     return ptrOffset(ptr, (ptrdiff_t) idx, size);
 }
-
-void *binarySearch(
+/*
+bool binarySearch(
     const void * const key,
     const void *data,
     size_t length,
@@ -44,11 +44,11 @@ void *binarySearch(
             data = ptrIncrement(ptr, size);
             length -= middle + 1;
         } else
-            return (void *) ptr;
+            return true;
     }
-    return NULL;
+    return false;
 }
-
+*/
 void reverse(
     const void *array,
     size_t length,
@@ -84,6 +84,28 @@ void *lowerBound(
     return (void *) array;
 }
 
+void *binarySearch(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+) {
+    void *end=elemAt(array,length,size);
+    while (length != 0U) {
+        const size_t index = length >> 1U;
+        void * const middle = elemAt(array, index, size);
+        const int result = compare(key, middle);
+        if (result <= 0)
+            length = index;
+        else {
+            array = ptrIncrement(middle, size);
+            length -= index + 1U;
+        }
+    }
+    if (array!=end && compare(key,array)==0) return (void*)array;
+    return NULL;
+}
 /*
 Обязательно: equal_range, lower_bound, upper_bound
 Карма +1: сортирока бинарным деревом (АВЛ)

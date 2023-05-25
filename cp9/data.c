@@ -7,7 +7,7 @@ int cmpData(const void * const a, const void * const b) {
     return strcmp(x,y);
 }
 
-int cmpKeyWithData(const void * const a, const void * const b) {
+int cmpStrWithData(const void * const a, const void * const b) {
     const char *x = (*(char**)a);
     const char *y = (*(Data**)b)->key;
     return strcmp(x,y);

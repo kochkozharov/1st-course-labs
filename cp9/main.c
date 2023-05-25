@@ -95,9 +95,15 @@ int main(void){
     for (;;) {
         str = inputString(stdin);
         if (!str) break;
-        Data **res = binarySearch(&str,table,lines_count,sizeof(Data*),cmpKeyWithData);
+        Data **res = binarySearch(&str,table,lines_count,sizeof(Data*),cmpStrWithData);
         if (!res) printf("N/A\n");
-        else printf("%s %s\n", (*res)->key,(*res)->value);
+        else {
+            Data **end = table + lines_count;
+            while (res != end && cmpStrWithData(&str, res) == 0) {
+                printf("%s %s\n", (*res)->key,(*res)->value);
+                ++res;
+            }
+        }
         free(str);
     }
     
