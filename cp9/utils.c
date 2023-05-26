@@ -109,6 +109,27 @@ void *lowerBound(
     return (void *) array;
 }
 
+void *upperBound(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+) {
+    while (length != 0U) {
+        const size_t index = length >> 1U;
+        void * const middle = elemAt(array, index, size);
+        const int result = compare(key, middle);
+        if (result < 0)
+            length = index;
+        else {
+            array = ptrIncrement(middle, size);
+            length -= index + 1U;
+        }
+    }
+    return (void *) array;
+}
+
 static void merge(
     void *a,
     size_t left,
@@ -122,7 +143,7 @@ static void merge(
     void *result[right-left];
 
     while (left+it1 < mid && mid+it2 < right) {
-        if (comp(elemAt(a,left+it1,size),elemAt(a,mid+it2,size))<0) {
+        if (comp(elemAt(a,left+it1,size),elemAt(a,mid+it2,size))<=0) {
             memcpy(elemAt(result,it1+it2,size),elemAt(a,left+it1,size),size);
             ++it1;
         }

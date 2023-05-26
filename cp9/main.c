@@ -96,13 +96,14 @@ int main(void){
     if (desc) {
         reverse(table,lines_count,sizeof(Data*));
     }
-    else if (asc == 0 && desc==0) {
+    else if (asc == 0 && desc == 0) {
         mergeSort(table,lines_count,sizeof(Data*),cmpData);
     }
 
     for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
+    
     printf("---------\n");
     for (;;) {
         str = inputString(stdin);
