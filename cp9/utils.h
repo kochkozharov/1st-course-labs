@@ -3,6 +3,11 @@
 
 #include <stddef.h>
 
+typedef struct {
+    void *first;
+    void *second;
+} Pair;
+
 void *binarySearch(
     const void *key,
     const void *data,
@@ -12,6 +17,14 @@ void *binarySearch(
 );
 
 void *lowerBound(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+);
+
+void *upperBound(
     const void * const key,
     const void *array,
     size_t length,
@@ -30,6 +43,14 @@ void reverse(
     const void *array,
     size_t length,
     const size_t size
+);
+
+Pair equalRange(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
 );
 
 #endif // UTILS_H

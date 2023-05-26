@@ -66,27 +66,13 @@ int main(void){
 
     Data ** table = vectorData(&vtable);
     size_t lines_count = vectorSize(&vtable);
-    /*
-    bool is_sorted = true;
-    for (size_t i =1; i < vectorSize(&vtable);++i) {
-        if (cmpData(table[i],table[i-1]) < 0) {
-            is_sorted = false;
-            break;
-        }
-    }
-
-    bool is_reverse_sorted = true;
-    for (size_t i =1; i < vectorSize(&vtable);++i) {
-        if (cmpData(table[i],table[i-1]) > 0) {
-            is_reverse_sorted = false;
-            break;
-        }
-    }
-    */
     for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
     printf("---------\n");
+    #if (1) //1 is stable, 0 is unstable but faster in some cases
+    mergeSort(table,lines_count,sizeof(Data*),cmpData);
+    #else
     int asc=1, desc = 1;
     for (size_t i=0;(asc == 1 || desc == 1) && i < lines_count - 1;++i) {
         if (cmpData(&table[i],&table[i+1])<0) desc = 0;
@@ -99,11 +85,16 @@ int main(void){
     else if (asc == 0 && desc == 0) {
         mergeSort(table,lines_count,sizeof(Data*),cmpData);
     }
-
+    #endif
+    
     for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
-    
+    /* tests 
+    printf("%s\n",(*(Data**)upperBound(&(char*){"a"},table,lines_count,sizeof(Data*),cmpData))->value);
+    Pair res = equalRange(&(char*){"a"},table,lines_count,sizeof(Data*),cmpData);
+    printf("%s, %s\n",(*(Data**)res.first)->value,(*(Data**)res.second)->value);
+    */
     printf("---------\n");
     for (;;) {
         str = inputString(stdin);

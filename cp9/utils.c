@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include "utils.h"
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
@@ -120,12 +121,12 @@ void *upperBound(
         const size_t index = length >> 1U;
         void * const middle = elemAt(array, index, size);
         const int result = compare(key, middle);
-        if (result < 0)
-            length = index;
-        else {
+        if (result >= 0) {
             array = ptrIncrement(middle, size);
             length -= index + 1U;
         }
+        else 
+            length = index;
     }
     return (void *) array;
 }
@@ -176,6 +177,19 @@ void mergeSort(
             merge(a,j,j+i, MIN(j+2*i, count),size,comp);
         }
     }
+}
+
+
+Pair equalRange(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+) {
+    void *first = lowerBound(key,array,length,size,compare);
+    void *second = upperBound(key,first,length-(((char*)first-(char*)array)/size),size,compare);
+    return (Pair){.first = first, .second = second};
 }
 /*
 Обязательно: equal_range, lower_bound, upper_bound
