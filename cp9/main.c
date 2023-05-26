@@ -86,8 +86,20 @@ int main(void){
     for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
-    qsort(table,lines_count,sizeof(Data*),cmpData);
     printf("---------\n");
+    int asc=1, desc = 1;
+    for (size_t i=0;(asc == 1 || desc == 1) && i < lines_count - 1;++i) {
+        if (cmpData(&table[i],&table[i+1])<0) desc = 0;
+        else if (cmpData(&table[i],&table[i+1])>0) asc = 0;
+    }
+
+    if (desc) {
+        reverse(table,lines_count,sizeof(Data*));
+    }
+    else if (asc == 0 && desc==0) {
+        mergeSort(table,lines_count,sizeof(Data*),cmpData);
+    }
+
     for (size_t i=0;i < lines_count;++i){
         printf("%s %s\n",table[i]->key,table[i]->value);
     }
@@ -106,30 +118,6 @@ int main(void){
         }
         free(str);
     }
-    
-    /*
-    if (is_reverse_sorted) {
-        vectorReverse(&vtable);
-    }
-    else if (!is_reverse_sorted && !is_sorted) {
-        qsort(table,vectorCapacity(&vtable),sizeof(Data *), cmpData);
-    }
-
-    for (size_t i=0;i < vectorSize(&vtable);++i){
-        printf("%s %s\n",table[i]->key,table[i]->value);
-    }
-    for (;;) {
-        str = inputString(stdin);
-        if (!str) break;
-        Data **ptr = binarySearch(str,table,vectorSize(&vtable),sizeof(Data*),cmpData);
-        if (!ptr) {printf("not found\n");}
-        else {
-            printf("%s %s\n",(*ptr)->key,(*ptr)->value);
-        }
-        free(str);
-    }
-    */
     vectorDestroy(&vtable);
-    
     return 0;
 }

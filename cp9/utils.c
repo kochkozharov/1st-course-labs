@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include "utils.h"
 
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+
 static inline void *ptrOffset(
     const void * const ptr,
     const ptrdiff_t idx,
@@ -49,6 +51,29 @@ bool binarySearch(
     return false;
 }
 */
+void *binarySearch(
+    const void * const key,
+    const void *array,
+    size_t length,
+    const size_t size,
+    int (* const compare)(const void *, const void *)
+) {
+    void *end=elemAt(array,length,size);
+    while (length != 0U) {
+        const size_t index = length >> 1U;
+        void * const middle = elemAt(array, index, size);
+        const int result = compare(key, middle);
+        if (result <= 0)
+            length = index;
+        else {
+            array = ptrIncrement(middle, size);
+            length -= index + 1U;
+        }
+    }
+    if (array!=end && compare(key,array)==0) return (void*)array;
+    return NULL;
+}
+
 void reverse(
     const void *array,
     size_t length,
@@ -84,27 +109,52 @@ void *lowerBound(
     return (void *) array;
 }
 
-void *binarySearch(
-    const void * const key,
-    const void *array,
-    size_t length,
-    const size_t size,
-    int (* const compare)(const void *, const void *)
+static void merge(
+    void *a,
+    size_t left,
+    size_t mid,
+    size_t right,
+    size_t size,
+    int (* const comp)(const void *, const void *)
 ) {
-    void *end=elemAt(array,length,size);
-    while (length != 0U) {
-        const size_t index = length >> 1U;
-        void * const middle = elemAt(array, index, size);
-        const int result = compare(key, middle);
-        if (result <= 0)
-            length = index;
+    size_t it1=0;
+    size_t it2=0;
+    void *result[right-left];
+
+    while (left+it1 < mid && mid+it2 < right) {
+        if (comp(elemAt(a,left+it1,size),elemAt(a,mid+it2,size))<0) {
+            memcpy(elemAt(result,it1+it2,size),elemAt(a,left+it1,size),size);
+            ++it1;
+        }
         else {
-            array = ptrIncrement(middle, size);
-            length -= index + 1U;
+            memcpy(elemAt(result,it1+it2,size),elemAt(a,mid+it2,size),size);
+            ++it2;
         }
     }
-    if (array!=end && compare(key,array)==0) return (void*)array;
-    return NULL;
+    while (left+it1<mid) {
+        memcpy(elemAt(result,it1+it2,size),elemAt(a,left+it1,size),size);
+        ++it1;
+    }
+    while (mid+it2<right) {
+        memcpy(elemAt(result,it1+it2,size),elemAt(a,mid+it2,size),size);
+        ++it2;
+    }
+    for (size_t i = 0; i < it1+it2; ++i) {
+        memcpy(elemAt(a,left+i,size),elemAt(result,i,size),size);
+    }
+}
+
+void mergeSort(
+    void *a,
+    size_t count,
+    size_t size, 
+    int (*comp) (const void *, const void *)
+) {
+    for (size_t i = 1; i < count; i*=2) {
+        for (size_t j = 0; j < count-i; j += 2*i) {
+            merge(a,j,j+i, MIN(j+2*i, count),size,comp);
+        }
+    }
 }
 /*
 Обязательно: equal_range, lower_bound, upper_bound
