@@ -144,7 +144,7 @@ static int merge(
     size_t it2=0;
     void *result = malloc((right - left) * size);
     if (!result) {
-        return -1;
+        return errno;
     }
 
     while (left+it1 < mid && mid+it2 < right) {
@@ -181,7 +181,7 @@ int mergeSort(
 ) {
     for (size_t i = 1; i < count; i*=2) {
         for (size_t j = 0; j < count-i; j += 2*i) {
-            if(merge(a,j,j+i, MIN(j+2*i, count),size,comp)) return -1;
+            if(merge(a,j,j+i, MIN(j+2*i, count),size,comp)) return errno;
         }
     }
     return 0;
