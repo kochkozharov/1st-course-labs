@@ -34,8 +34,8 @@ void *upperBound(
 
 void mergeSort(
     void *a, 
-    size_t count,
-    size_t size, 
+    const size_t count,
+    const size_t size, 
     int (*comp) (const void *, const void *)
 );
 

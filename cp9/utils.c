@@ -133,10 +133,10 @@ void *upperBound(
 
 static void merge(
     void *a,
-    size_t left,
-    size_t mid,
-    size_t right,
-    size_t size,
+    const size_t left,
+    const size_t mid,
+    const size_t right,
+    const size_t size,
     int (* const comp)(const void *, const void *)
 ) {
     size_t it1=0;
@@ -168,8 +168,8 @@ static void merge(
 
 void mergeSort(
     void *a,
-    size_t count,
-    size_t size, 
+    const size_t count,
+    const size_t size, 
     int (*comp) (const void *, const void *)
 ) {
     for (size_t i = 1; i < count; i*=2) {

@@ -83,8 +83,10 @@ int main(void) {
             }
             else if (strcmp(command, "depth\n")==0)
                 printf("%ld\n", tree_depth(&tr));
-            else if (strcmp(command, "quit\n")==0)
+            else if (strcmp(command, "quit\n")==0) {
+                tree_destroy(&tr);
                 flag=false;
+            }
             else printf("Invalid input\n");
         }
     }
