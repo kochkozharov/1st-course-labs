@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <errno.h>
 #include "utils.h"
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
@@ -131,7 +132,7 @@ void *upperBound(
     return (void *) array;
 }
 
-static void merge(
+static int merge(
     void *a,
     const size_t left,
     const size_t mid,
@@ -141,7 +142,10 @@ static void merge(
 ) {
     size_t it1=0;
     size_t it2=0;
-    void *result[right-left];
+    void *result = malloc((right - left) * size);
+    if (!result) {
+        return -1;
+    }
 
     while (left+it1 < mid && mid+it2 < right) {
         if (comp(elemAt(a,left+it1,size),elemAt(a,mid+it2,size))<=0) {
@@ -164,9 +168,12 @@ static void merge(
     for (size_t i = 0; i < it1+it2; ++i) {
         memcpy(elemAt(a,left+i,size),elemAt(result,i,size),size);
     }
+
+    free(result);
+    return 0;
 }
 
-void mergeSort(
+int mergeSort(
     void *a,
     const size_t count,
     const size_t size, 
@@ -174,9 +181,10 @@ void mergeSort(
 ) {
     for (size_t i = 1; i < count; i*=2) {
         for (size_t j = 0; j < count-i; j += 2*i) {
-            merge(a,j,j+i, MIN(j+2*i, count),size,comp);
+            if(merge(a,j,j+i, MIN(j+2*i, count),size,comp)) return -1;
         }
     }
+    return 0;
 }
 
 

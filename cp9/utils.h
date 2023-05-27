@@ -32,7 +32,7 @@ void *upperBound(
     int (* const compare)(const void *, const void *)
 );
 
-void mergeSort(
+int mergeSort(
     void *a, 
     const size_t count,
     const size_t size, 
