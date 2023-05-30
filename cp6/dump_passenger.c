@@ -52,9 +52,10 @@ int main(int argc, char *argv[]) {
     }
     Passenger p;
     FILE *out = fopen(argv[1], "ab");
-    if (!out)
+    if (!out) {
         perror("Can't open file");
         return 1;
+    }
     while (readPassenger(&p)==0)
         fwrite(&p, sizeof(p), 1, out);
     return 0;

@@ -2,14 +2,15 @@ CC=clang
 CFLAGS=-Wall -Werror -Wextra -Wfatal-errors -Wpedantic -pedantic-errors -std=c18
 LDFLAGS=
 LDLIBS=
-SOURCES=passenger.c dump_passenger.c
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=pdump pselect
+EXECUTABLE=bin/pdump bin/pselect
 
-all: pdump
+all: $(EXECUTABLE)
 
-pdump : passenger.o dump_passenger.o
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LDLIBS) -o $@
+bin/pdump: passenger.o dump_passenger.o
+	$(CC) $(LDFLAGS) passenger.o dump_passenger.o $(LDLIBS) -o $@
+
+bin/pselect: passenger.o select_passenger.o 
+	$(CC) $(LDFLAGS) passenger.o select_passenger.o  $(LDLIBS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
