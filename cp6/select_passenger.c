@@ -25,9 +25,9 @@ bool get(Passenger * const passenger, const void * const data) {
     return true;
 }
 
-void put(const char * const lastName, const void * const data) {
+void putName(const char * const name, const void * const data) {
     FILE * const out = ((Data *) data)->out;
-    fprintf(out, "lastName = %s\n", lastName);
+    fprintf(out, "passengerName = %s\n", name);
 }
 
 void putPassenger(const Passenger * const passenger, const void * const data) {
@@ -83,7 +83,7 @@ int main(const int argc, char ** const argv) {
     Data data = { .in = in, .out = stdout };
     if (displayDump)
         display(get, putPassenger, &data);
-    select(parameter, get, put, &data);
+    select(parameter, get, putName, &data);
 
     if (fclose(in) == EOF) {
         perror("fclose");

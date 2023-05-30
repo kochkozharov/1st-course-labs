@@ -30,7 +30,7 @@ void select(
 
 void display(
     bool (*get)(Passenger *, const void *),
-    void (*put)(const Passenger*, const void *),
+    void (*put)(const Passenger *, const void *),
     void *data
 ) {
     Passenger passenger;

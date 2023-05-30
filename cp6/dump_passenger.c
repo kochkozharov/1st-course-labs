@@ -58,5 +58,7 @@ int main(int argc, char *argv[]) {
     }
     if (readPassenger(&p)==0)
         fwrite(&p, sizeof(p), 1, out);
+    else
+        perror("readPassenger");
     return 0;
 }
