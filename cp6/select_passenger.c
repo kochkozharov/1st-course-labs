@@ -49,24 +49,18 @@ void putPassenger(const Passenger * const passenger, const void * const data) {
 }
 
 int main(const int argc, char ** const argv) {
-    if (!strcmp(argv[1], "--help")) {
-        printf("Usage: %s -f FILE -p PARAMETER\n", argv[0]);
+    if (argc == 2 && !strcmp(argv[1], "--help")) {
+        printf("Usage: %s -f FILE -p PARAMETER [-v]\n", argv[0]);
         exit(EXIT_SUCCESS);
-    }
-    else if (argc != 5) {
-        fprintf(stderr, "%s: wrong count of arguments\n", argv[0]);
-        exit(EXIT_FAILURE);
     }
 
     const char *file = NULL;
     long long parameter = 0;
-    for (int opt; opt = getopt(argc, argv, "f:p:"), opt != -1; ) {
+    bool displayDump = false;
+    for (int opt; opt = getopt(argc, argv, "vf:p:"), opt != -1; ) {
         switch (opt) {
-            case ':':
-                fprintf(stderr, "%s: unknown option -- %c\n", argv[0], optopt);
-                break;
             case '?':
-                break;
+                exit(EXIT_FAILURE);
             case 'f':
                 file = optarg;
                 break;
@@ -74,11 +68,11 @@ int main(const int argc, char ** const argv) {
                 char *end;
                 parameter = strtoll(optarg, &end, 10);
                 break;
-            default:
-                assert(false);
+            case 'v':
+                displayDump = true;
+                break;
         }
     }
-
     printf("file: %s, parameter: %lld\n", file, parameter);
 
     FILE *in = fopen(file, "rb");
@@ -87,7 +81,8 @@ int main(const int argc, char ** const argv) {
         exit(EXIT_FAILURE);
     }
     Data data = { .in = in, .out = stdout };
-    display(get, putPassenger, &data);
+    if (displayDump)
+        display(get, putPassenger, &data);
     select(parameter, get, put, &data);
 
     if (fclose(in) == EOF) {
