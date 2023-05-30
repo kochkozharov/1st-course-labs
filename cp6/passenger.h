@@ -19,8 +19,14 @@ typedef struct {
 
 void select(
     long long p,
-    bool (*get)(Passenger *, void *),
+    bool (*get)(Passenger *, const void *),
     void (*put)(const char *, const void *),
+    void *data
+);
+
+void display(
+    bool (*get)(Passenger *, const void *),
+    void (*put)(const Passenger *, const void *),
     void *data
 );
 

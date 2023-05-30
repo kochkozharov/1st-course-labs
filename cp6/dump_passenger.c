@@ -5,11 +5,11 @@
 
 #include "passenger.h"
 
-static void usage(void) {
+void usage(void) {
     printf("Usage: program filename\n");
 }
 
-static int readPassenger(Passenger *p) {
+int readPassenger(Passenger *p) {
     printf("Last name: ");
     if(scanf("%39s",p->lastName) != 1 ) goto err;
     if (getchar()!='\n') goto err;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     Passenger p;
     FILE *out = fopen(argv[1], "ab");
     if (!out) {
-        perror("Can't open file");
+        perror("fopen");
         return 1;
     }
     while (readPassenger(&p)==0)

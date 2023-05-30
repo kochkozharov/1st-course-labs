@@ -12,20 +12,40 @@ typedef struct {
 } Data;
 
 
-bool get(Passenger * const passenger, void * const data) {
+bool get(Passenger * const passenger, const void * const data) {
     FILE * const in = ((Data *) data)->in;
     const size_t count = fread(passenger, sizeof(Passenger), 1U, in);
     if (count != 1U && ferror(in) != 0) {
         perror("fread");
         exit(EXIT_FAILURE);
-    } else if (count != 1U)
+    } else if (count != 1U) {
+        fseek(((Data *) data)->in, 0, SEEK_SET);
         return false;
+    }
     return true;
 }
 
-void put(const char *lastName, const void * data) {
+void put(const char * const lastName, const void * const data) {
     FILE * const out = ((Data *) data)->out;
     fprintf(out, "lastName = %s\n", lastName);
+}
+
+void putPassenger(const Passenger * const passenger, const void * const data) {
+    FILE * const out = ((Data *) data)->out;
+    fprintf(out, "----------------------------------\n");
+    fprintf(out, "lastName = %s\n", passenger->lastName);
+    fprintf(out, "initials = %c%c\n", passenger->initials[0],passenger->initials[1]);
+    fprintf(out, "amountOfItems = %hhu\n", passenger->amountOfItems);
+    fprintf(out, "totalWeightOfItems = %hhu\n", passenger->totalWeightOfItems);
+    fprintf(out, "destination = %s\n", passenger->destination);
+    const char *dt = passenger->departureTime;
+    fprintf(out, "departureTime = %c%c.%c%c.%c%c%c%c %c%c:%c%c\n", dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], dt[6], dt[7], dt[8], dt[9], dt[10], dt[11]);
+    if (passenger->hasTransfers) 
+        fprintf(out, "hasTransfers = true\n");
+    else
+        fprintf(out, "hasTransfers = false\n");
+    fprintf(out, "amountOfChildren = %hhu\n", passenger->amountOfChildren);
+    fprintf(out, "----------------------------------\n");
 }
 
 int main(const int argc, char ** const argv) {
@@ -67,6 +87,7 @@ int main(const int argc, char ** const argv) {
         exit(EXIT_FAILURE);
     }
     Data data = { .in = in, .out = stdout };
+    display(get, putPassenger, &data);
     select(parameter, get, put, &data);
 
     if (fclose(in) == EOF) {
