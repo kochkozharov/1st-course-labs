@@ -1,22 +1,27 @@
-CC=clang
+CC=gcc
 CFLAGS=-Wall -Werror -Wextra -Wfatal-errors -Wpedantic -pedantic-errors -std=c18
 LDFLAGS=
 LDLIBS=
 EXECUTABLE=bin/pdump bin/pselect
+DIRS=bin
 
-all: $(EXECUTABLE)
 
-bin/pdump: passenger.o dump_passenger.o
-	$(CC) $(LDFLAGS) passenger.o dump_passenger.o $(LDLIBS) -o $@
+all: $(DIRS) $(EXECUTABLE)
 
-bin/pselect: passenger.o select_passenger.o 
-	$(CC) $(LDFLAGS) passenger.o select_passenger.o  $(LDLIBS) -o $@
+$(DIRS):
+	mkdir -p $(DIRS)
 
-%.o: %.c
+bin/pdump: bin/passenger.o bin/dump_passenger.o
+	$(CC) $(LDFLAGS) bin/passenger.o bin/dump_passenger.o $(LDLIBS) -o $@
+
+bin/pselect: bin/passenger.o bin/select_passenger.o 
+	$(CC) $(LDFLAGS)  bin/passenger.o bin/select_passenger.o  $(LDLIBS) -o $@
+
+bin/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf *.o $(EXECUTABLE)
+	rm -rf bin/*.o $(EXECUTABLE)
 
 debug: CFLAGS+=-Og -g
 
