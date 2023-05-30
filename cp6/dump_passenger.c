@@ -5,19 +5,17 @@
 
 #include "passenger.h"
 
-
-
 static void usage(void) {
     printf("Usage: program filename\n");
 }
 
 static int readPassenger(Passenger *p) {
     printf("Last name: ");
-    scanf("%39s",p->lastName);
+    if(scanf("%39s",p->lastName) != 1 ) goto err;
     if (getchar()!='\n') goto err;
     printf("Initials: ");
-    if(scanf("%c%[^\n]c", &p->initials[0],&p->initials[1]) != 2) goto err;
-    if (getchar()!='\n') goto err;
+    if(scanf("%c%c", &p->initials[0],&p->initials[1]) != 2 ) goto err;
+    if (p->initials[1] != '\n' && getchar()!='\n') goto err;
     printf("Amount of items: ");
     scanf("%hhu", &p->amountOfItems);
     if (getchar()!='\n') goto err;
@@ -29,19 +27,8 @@ static int readPassenger(Passenger *p) {
     if (getchar()!='\n') goto err;
     printf("Departure Time (e.g. 01.01.2023 16:30): ");
     char *dt = p->departureTime;
-    if (scanf("%c%c.%c%c.%c%c%c%c %c%c:%c%[^\n]c",dt,dt+1,dt+2,dt+3,dt+4,dt+5,dt+6,dt+7,dt+8,dt+9,dt+10,dt+11) != 12) goto err;
-    if (getchar()!='\n') goto err;
-    /*
-    for (size_t i=0; i <= sizeof(p->departureTime);++i) {
-        int c = fgetc(stdin);
-        if (c != EOF && !(i==2 && c!='.') && !(i==5 && c!='.') && !(i==10 && c!=' ') 
-            && !(i==13 && c!=':') && !(i==sizeof(p->departureTime) && c != '\n')) 
-            {
-            p->departureTime[i] = (char) c;
-            }
-        else goto err;
-    }
-    */
+    if (scanf("%c%c.%c%c.%c%c%c%c %c%c:%c%c",dt,dt+1,dt+2,dt+3,dt+4,dt+5,dt+6,dt+7,dt+8,dt+9,dt+10,dt+11) != 12) goto err;
+    if (dt[11] != '\n' && getchar()!='\n') goto err;
     printf("Has transfers? (y/n): ");
     unsigned char ans;
     scanf("%c", &ans);
@@ -64,11 +51,10 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     Passenger p;
-    FILE *out = fopen(argv[1], "wb");
-    if (!out) {
+    FILE *out = fopen(argv[1], "ab");
+    if (!out)
         perror("Can't open file");
         return 1;
-    }
     while (readPassenger(&p)==0)
         fwrite(&p, sizeof(p), 1, out);
     return 0;
