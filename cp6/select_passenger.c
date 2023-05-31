@@ -32,7 +32,6 @@ void putName(const char * const name, const void * const data) {
 
 void putPassenger(const Passenger * const passenger, const void * const data) {
     FILE * const out = ((Data *) data)->out;
-    fprintf(out, "----------------------------------\n");
     fprintf(out, "lastName = %s\n", passenger->lastName);
     fprintf(out, "initials = %c%c\n", passenger->initials[0],passenger->initials[1]);
     fprintf(out, "amountOfItems = %hhu\n", passenger->amountOfItems);

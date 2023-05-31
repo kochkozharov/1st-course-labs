@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     Passenger p;
     FILE *out = fopen(argv[1], "ab");
     if (!out) {
-        perror("fopen ");
+        perror("fopen");
         return 1;
     }
     if (readPassenger(&p)==0)
