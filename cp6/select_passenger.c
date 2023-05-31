@@ -56,6 +56,7 @@ int main(const int argc, char ** const argv) {
     const char *file = NULL;
     long long parameter = 0;
     bool displayDump = false;
+    bool hasParam = false;
     for (int opt; opt = getopt(argc, argv, "vf:p:"), opt != -1; ) {
         switch (opt) {
             case '?':
@@ -66,13 +67,13 @@ int main(const int argc, char ** const argv) {
             case 'p': ;
                 char *end;
                 parameter = strtoll(optarg, &end, 10);
+                hasParam = true;
                 break;
             case 'v':
                 displayDump = true;
                 break;
         }
     }
-    printf("file: %s, parameter: %lld\n", file, parameter);
 
     FILE *in = fopen(file, "rb");
     if (in == NULL) {
@@ -82,7 +83,8 @@ int main(const int argc, char ** const argv) {
     Data data = { .in = in, .out = stdout };
     if (displayDump)
         display(get, putPassenger, &data);
-    select(parameter, get, putName, &data);
+    if (hasParam)
+        select(parameter, get, putName, &data);
 
     if (fclose(in) == EOF) {
         perror("fclose");

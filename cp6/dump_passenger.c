@@ -36,6 +36,7 @@ int readPassenger(Passenger *p) {
     printf("Amount of children: ");
     scanf("%hhu", &p->amountOfChildren);
     if (getchar()!='\n') goto err;
+    printf("Passenger successfully dumped!\n");
     return 0;
     err:
     errno = EINVAL;
