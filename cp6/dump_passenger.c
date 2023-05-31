@@ -2,12 +2,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "passenger.h"
-
-void usage(void) {
-    printf("Usage: program filename\n");
-}
 
 int readPassenger(Passenger *p) {
     printf("Last name: ");
@@ -47,18 +44,24 @@ int readPassenger(Passenger *p) {
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        usage();
-        return 1;
+        printf("Usage: program filename\n");
+        exit(EXIT_SUCCESS);
     }
     Passenger p;
     FILE *out = fopen(argv[1], "ab");
     if (!out) {
         perror("fopen");
-        return 1;
+        exit(EXIT_FAILURE);
     }
     if (readPassenger(&p)==0)
         fwrite(&p, sizeof(p), 1, out);
-    else
+    else {
         perror("readPassenger");
+        exit(EXIT_FAILURE);
+    }
+    if (fclose(out) == EOF) {
+        perror("fclose");
+        exit(EXIT_FAILURE);
+    }
     return 0;
 }
