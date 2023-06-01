@@ -25,8 +25,17 @@ bool get(Passenger * const passenger, const void * const data) {
     return true;
 }
 
-void putName(const char * const name, const void * const data) {
+void putName(const Passenger * const passenger, const void * const data) {
     FILE * const out = ((Data *) data)->out;
+    char name[LINE_SIZE+5];
+    strcpy(name,passenger->lastName);
+    size_t str_len=strlen(name);
+    name[str_len]=' ';
+    name[str_len+1]=passenger->initials[0];
+    name[str_len+2]='.';
+    name[str_len+3]=passenger->initials[1];
+    name[str_len+4]='.';
+    name[str_len+5]='\0';
     fprintf(out, "passengerName = %s\n", name);
 }
 
@@ -81,8 +90,9 @@ int main(const int argc, char ** const argv) {
         exit(EXIT_FAILURE);
     }
     Data data = { .in = in, .out = stdout };
-    if (displayDump)
-        display(get, putPassenger, &data);
+    if (displayDump) {
+        select(-1, get, putPassenger, &data);
+    }
     if (hasParam)
         select(parameter, get, putName, &data);
 
