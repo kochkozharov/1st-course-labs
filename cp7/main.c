@@ -25,8 +25,11 @@ int main(void) {
     matrixSet(&m, 0, 0, 2);
     matrixSet(&m, 1, 3, -66);
     matrixSet(&m, 2, 0, -66);
-
-    printf("%ld\n", matrixNonZeroCount(&m));
+    matrixSet(&m, 2, 2, -88);
+    matrixResize(&m, 2, 3);
+    matrixSet(&m, 1, 2, 666);
+    matrixResize(&m,3,3);
+    matrixDebugPrint(stdout, &m);
     matrixDestroy(&m);
 
     return 0;

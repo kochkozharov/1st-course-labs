@@ -60,12 +60,46 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
         return -1;
     }
     if (matrix->size1 > size1 || matrix->size2 > size2) {
-        return -1; //TODO
+        for (size_t i = 0; i < size1; ++i) {
+            ptrdiff_t row_index =  matrix->m[i];
+            ptrdiff_t prev_index = -1;
+            while (  row_index != -1 ) {
+                ptrdiff_t next = matrix->a[row_index].next;
+                if ( (size_t) matrix->a[row_index].col >= size2) {
+                    matrix->a[row_index].col = -1;
+                    matrix->a[row_index].next = matrix->empty;
+                    matrix->empty = row_index;
+                    ++matrix->empty_count;
+                    if (prev_index != -1) {
+                        matrix->a[prev_index].next = next;
+                    }
+                }
+                else {
+                    prev_index = row_index;
+                }
+                row_index = next;
+            }
+        }
+        for (size_t i = size1; i < matrix->size1; ++i) {
+            ptrdiff_t row_index =  matrix->m[i];
+            while (  row_index != -1 ) {
+                matrix->a[row_index].col = -1;
+                ptrdiff_t next = matrix->a[row_index].next;
+                matrix->a[row_index].next = matrix->empty;
+                matrix->empty = row_index;
+                ++matrix->empty_count;
+                row_index = next;
+            }
+        }
+        matrix->size1 = size1;
+        matrix->m=realloc(matrix->m, size1 * sizeof(size_t));
+        matrix->size2 = size2;
+        return 0; 
     }
     size_t old_size1 = matrix->size1;
     matrix->size1 = size1;
     matrix->size2 = size2;
-    matrix->m = realloc(matrix->m, size1 * sizeof(_Elem));
+    matrix->m = realloc(matrix->m, size1 * sizeof(size_t));
     if (!matrix->m) abort();
     for (size_t i=old_size1; i < matrix->size1; ++i) {
         matrix->m[i] = -1;
@@ -82,6 +116,31 @@ int matrixScan(FILE * const in, Matrix * const matrix) {
     if (matrixResize(matrix, size1, size2) != 0)
         return -1;
     return -1;
+}
+
+int matrixDebugPrint(FILE *out, const Matrix *matrix) {
+    if(fprintf(out, "size1 = %zu, size2 = %zu\n", matrix->size1, matrix->size2)<0)
+        return -1;
+    
+    fprintf(out, "M = ");
+    for (size_t i = 0; i < matrix->size1; ++i) {
+        if(fprintf(out, "[%td]", matrix->m[i])<0)
+            return -1;
+    }
+    fprintf(out, "\n");
+    fprintf(out, "A = ");
+    for (size_t i = 0; i < matrix->size; ++i) {
+        if(fprintf(out, "[%td %lld %td]", matrix->a[i].col, matrix->a[i].value, matrix->a[i].next)<0)
+            return -1;
+    }
+    fprintf(out, "\n");
+    return 0;
+}
+
+int matrixPrint(FILE *out, const Matrix *matrix) {
+    (void) out;
+    (void) matrix;
+    return 0;
 }
 
 int matrixSet(
@@ -168,3 +227,9 @@ size_t matrixSize2(const Matrix *matrix) {
 size_t matrixNonZeroCount(const Matrix *matrix) {
     return matrix->size - matrix->empty_count;
 }
+
+/*
+int matrixGet(const Matrix *matrix, size_t index1, size_t index2, long long *ptr) {
+
+}
+*/
