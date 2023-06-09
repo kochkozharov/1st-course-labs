@@ -16,7 +16,8 @@ typedef struct {
 typedef struct {
     ptrdiff_t *m; //-1
     _Elem *a;
-    size_t size1, size2, count;
+    size_t size1, size2, size, empty_count,  capacity;
+    ptrdiff_t empty; //индекс первого в цепочке удаленных эл-тов
 } Matrix;
 
 void matrixClear(Matrix *matrix);
@@ -42,5 +43,7 @@ int matrixSet(Matrix *matrix, size_t index1, size_t index2, long long value);
 size_t matrixSize1(const Matrix *matrix);
 
 size_t matrixSize2(const Matrix *matrix);
+
+size_t matrixNonZeroCount(const Matrix *matrix);
 
 #endif //MATRIX_H

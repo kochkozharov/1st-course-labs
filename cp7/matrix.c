@@ -12,22 +12,30 @@
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b)) 
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b)) 
 
-void matrixClear(Matrix *matrix) {
+static size_t newCapacity(const size_t capacity) {
+    if (capacity == 0)
+        return 1;
+    return capacity <= SIZE_MAX / 2 ? capacity * 2 : SIZE_MAX;
+}
+
+void matrixClear(Matrix *matrix) { //занулить, сохравнив размер
     for (size_t i; i < matrix->size1; ++i) {
         matrix->m[i] = -1;
     }
     free(matrix->a);
     matrix->a = NULL;
-    matrix->count = 0;
+    matrix->size = matrix->capacity = 0;
+    matrix->empty = -1;
 }
 
 void matrixCreate(Matrix *matrix) {
     matrix->a = NULL;
     matrix->m = NULL;
-    matrix->size1 = matrix->size2 = matrix->count = 0;
+    matrix->size1 = matrix->size2 = matrix->size = matrix->capacity = 0;
+    matrix->empty = -1;
 }
 
-void matrixDestroy(Matrix *matrix) {
+void matrixDestroy(Matrix *matrix) { 
     free(matrix->m);
     free(matrix->a);
 }
@@ -81,7 +89,7 @@ int matrixSet(
     ptrdiff_t prev_col_index = -1;
     while ( row_index != -1 || matrix->a[row_index].col != index2) {
         if (matrix->a[row_index].col < index2) {
-            prev_col_index = MAX(prev_col_index, matrix->a[row_index].col); //предыдущий элт
+            prev_col_index = MAX(prev_col_index, matrix->a[row_index].col); //предыдущий эл-т
         }
         row_index = matrix->a[row_index].next;
     }
@@ -89,29 +97,45 @@ int matrixSet(
         if (value==0) { // зануляем ноль
             return 0;
         }
-        ++matrix->count; //добавляем элемент
-        matrix->a = realloc(matrix->a, matrix->count);
-        if (!matrix->a) abort();
+        ++matrix->size; //добавляем элемент
+        ptrdiff_t index_in_a; //первый пустой или новый
+        if (matrix->empty == -1) { //нет пробелов
+            index_in_a = matrix->size-1;
+            if (index_in_a == matrix->capacity) {
+                matrix->capacity = newCapacity(matrix->capacity);
+                matrix->a = realloc(matrix->a, matrix->capacity);
+                if (!matrix->a) abort();
+            }
+        }
+        else {
+            --matrix->empty_count;
+            index_in_a = matrix->empty;
+            matrix->empty = matrix->a[matrix->empty].next;
+        }
         if (start_index == -1) { // строка была пустой
-            matrix->a[matrix->count] = (_Elem) { .col = index2, .value = value, .next = -1};
-            matrix->m[index2] = matrix->count;
+            matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = -1};
+            matrix->m[index2] = index_in_a;
             return 0;
         } // в строке были эл-ты
-        matrix->a[matrix->count] = (_Elem) { .col = index2, .value = value, .next = matrix->a[prev_col_index].next};
-        matrix->a[prev_col_index].next = matrix->count;
+        matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = matrix->a[prev_col_index].next};
+        matrix->a[prev_col_index].next = index_in_a;
         return 0;
     }
-    if (value == 0) { // удаляем элемент
-        --matrix->count;
+    if (value == 0) { // удаляем элемент      
+        ++matrix->empty_count;
         ptrdiff_t next = matrix->a[row_index].next;
-        matrix->a[prev_col_index].next = next;
-        matrix->a[row_index] = matrix->a[matrix->count + 1]; //гениальный мув
-        matrix->a = realloc(matrix->a, matrix->count);
-        if (!matrix->a) abort();
-        return 0; 
+        if (start_index == row_index) { //элем был первым - обновляем m
+            matrix->m[index1] = next;
+        }
+        matrix->a[prev_col_index].next = next; //перелинковка
+
+        matrix->a[row_index].next = matrix->empty; // теперь некст показывает на следующий пустой! образуется цепочка пустых эл-тов.
+        matrix->empty = row_index;
+        matrix->a[matrix->empty].col=-1; //на всякий случай
+        return 0;
     } 
     matrix->a[row_index].value = value; // заменяем значение
-    return 0;     
+    return 0;
 }
 
 size_t matrixSize1(const Matrix *matrix) {
@@ -120,4 +144,8 @@ size_t matrixSize1(const Matrix *matrix) {
 
 size_t matrixSize2(const Matrix *matrix) {
     return matrix->size2;
+}
+
+size_t matrixNonZeroCount(const Matrix *matrix) {
+    return matrix->size - matrix->empty_count;
 }
