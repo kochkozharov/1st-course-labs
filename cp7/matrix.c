@@ -9,6 +9,12 @@
 
 #include "matrix.h"
 
+#define DEBUG   printf("M "); \
+                for (size_t i = 0; i < matrix->size1; ++i) printf("%ld ", matrix->m[i]); \
+                printf("\n"); \
+                for (size_t i = 0; i < matrix->size; ++i) printf("%ld %lld %ld\n", matrix->a[i].col, matrix->a[i].value, matrix->a[i].next); \
+                printf("\n"); 
+
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b)) 
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b)) 
 
@@ -19,19 +25,19 @@ static size_t newCapacity(const size_t capacity) {
 }
 
 void matrixClear(Matrix *matrix) { //занулить, сохравнив размер
-    for (size_t i; i < matrix->size1; ++i) {
+    for (size_t i=0; i < matrix->size1; ++i) {
         matrix->m[i] = -1;
     }
     free(matrix->a);
     matrix->a = NULL;
-    matrix->size = matrix->capacity = 0;
+    matrix->size = matrix->capacity = matrix->empty_count = 0;
     matrix->empty = -1;
 }
 
-void matrixCreate(Matrix *matrix) {
+void matrixCreate(Matrix *matrix) { //создается матрица 0x0 - ее нудно ресайзить
     matrix->a = NULL;
     matrix->m = NULL;
-    matrix->size1 = matrix->size2 = matrix->size = matrix->capacity = 0;
+    matrix->size1 = matrix->size2 = matrix->size = matrix->capacity = matrix->empty_count= 0;
     matrix->empty = -1;
 }
 
@@ -48,16 +54,22 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
     assert((matrix->size1 == 0) == (matrix->size2 == 0) &&
         (matrix->size2 == 0 || matrix->size1 <= PTRDIFF_MAX / matrix->size2)
     );
-    if ((size1 == 0) == (size2 == 0) &&
-        (size2 == 0 || size1 > PTRDIFF_MAX / size2)) {
+    if ((size1 == 0) != (size2 == 0) ||
+        !(size2 == 0 || size1 <= PTRDIFF_MAX / size2)) {
         errno = EINVAL;
         return -1;
     }
     if (matrix->size1 > size1 || matrix->size2 > size2) {
         return -1; //TODO
     }
+    size_t old_size1 = matrix->size1;
     matrix->size1 = size1;
     matrix->size2 = size2;
+    matrix->m = realloc(matrix->m, size1 * sizeof(_Elem));
+    if (!matrix->m) abort();
+    for (size_t i=old_size1; i < matrix->size1; ++i) {
+        matrix->m[i] = -1;
+    }
     return 0;
 }
 
@@ -69,6 +81,7 @@ int matrixScan(FILE * const in, Matrix * const matrix) {
     }
     if (matrixResize(matrix, size1, size2) != 0)
         return -1;
+    return -1;
 }
 
 int matrixSet(
@@ -86,39 +99,42 @@ int matrixSet(
     }
     ptrdiff_t start_index =  matrix->m[index1];
     ptrdiff_t row_index = start_index;
-    ptrdiff_t prev_col_index = -1;
-    while ( row_index != -1 || matrix->a[row_index].col != index2) {
-        if (matrix->a[row_index].col < index2) {
-            prev_col_index = MAX(prev_col_index, matrix->a[row_index].col); //предыдущий эл-т
-        }
+    ptrdiff_t prev_index = -1;
+    while ( matrix->a && row_index != -1 && matrix->a[row_index].col != (ptrdiff_t) index2 ) {
+        prev_index = row_index; // сохраняем предыдущий эл-т
         row_index = matrix->a[row_index].next;
     }
+    printf("PREV COL IND %ld\n", prev_index);
     if (row_index == -1) {  // по этим индексам 0
         if (value==0) { // зануляем ноль
             return 0;
         }
-        ++matrix->size; //добавляем элемент
-        ptrdiff_t index_in_a; //первый пустой или новый
+        size_t index_in_a; //первый пустой или новый
         if (matrix->empty == -1) { //нет пробелов
+            ++matrix->size; // реально добавляем элемент
             index_in_a = matrix->size-1;
             if (index_in_a == matrix->capacity) {
                 matrix->capacity = newCapacity(matrix->capacity);
-                matrix->a = realloc(matrix->a, matrix->capacity);
+                printf("new cap: %ld\n", matrix->capacity);
+                printf("%p\n", (void*) matrix->a);
+                matrix->a = realloc(matrix->a, (matrix->capacity) * sizeof(_Elem));
                 if (!matrix->a) abort();
             }
         }
-        else {
+        else { //или залатываем пробел
             --matrix->empty_count;
             index_in_a = matrix->empty;
             matrix->empty = matrix->a[matrix->empty].next;
         }
         if (start_index == -1) { // строка была пустой
             matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = -1};
-            matrix->m[index2] = index_in_a;
+            matrix->m[index1] = index_in_a;
+            DEBUG
             return 0;
         } // в строке были эл-ты
-        matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = matrix->a[prev_col_index].next};
-        matrix->a[prev_col_index].next = index_in_a;
+        matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = matrix->a[prev_index].next};
+        matrix->a[prev_index].next = index_in_a;
+        DEBUG
         return 0;
     }
     if (value == 0) { // удаляем элемент      
@@ -127,14 +143,17 @@ int matrixSet(
         if (start_index == row_index) { //элем был первым - обновляем m
             matrix->m[index1] = next;
         }
-        matrix->a[prev_col_index].next = next; //перелинковка
-
+        else {
+            matrix->a[prev_index].next = next; //перелинковка
+        }
         matrix->a[row_index].next = matrix->empty; // теперь некст показывает на следующий пустой! образуется цепочка пустых эл-тов.
         matrix->empty = row_index;
         matrix->a[matrix->empty].col=-1; //на всякий случай
+        DEBUG
         return 0;
-    } 
+    }
     matrix->a[row_index].value = value; // заменяем значение
+    DEBUG
     return 0;
 }
 

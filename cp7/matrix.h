@@ -8,15 +8,15 @@
 
 
 typedef struct {
-    size_t col;
+    ptrdiff_t col;
     long long value;
     ptrdiff_t next; //-1
 } _Elem;
 
 typedef struct {
     ptrdiff_t *m; //-1
-    _Elem *a;
-    size_t size1, size2, size, empty_count,  capacity;
+    _Elem *a;         // size - фактическое количество элементов, capacity - кол-во выделенных ячеек для эл-тов. 
+    size_t size1, size2, size, empty_count, capacity; //empty_count - количество элементов, отмеченных как удаленные
     ptrdiff_t empty; //индекс первого в цепочке удаленных эл-тов
 } Matrix;
 
