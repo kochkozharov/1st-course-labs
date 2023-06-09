@@ -17,7 +17,6 @@ int main(void) {
     matrixSet(&m, 2, 3, 0);
     matrixSet(&m, 2, 2, 0);
     matrixSet(&m, 1, 3, 0);
-    printf("udal\n");
     matrixSet(&m, 0, 1, 3);
     matrixSet(&m, 0, 2, 7);
     matrixSet(&m, 0, 3, 8);
@@ -30,8 +29,14 @@ int main(void) {
     matrixSet(&m, 1, 2, 666);
     matrixResize(&m,3,3);
     matrixDebugPrint(stdout, &m);
-    long long v;
+    printf("Print\n");
     matrixPrint(stdout,&m);
     matrixDestroy(&m);
+    Matrix scnd_m;
+    matrixCreate(&scnd_m);
+    printf("Input matrix:\n");
+    matrixScan(stdin, &scnd_m);
+    matrixPrint(stdout, &scnd_m);
+    matrixDestroy(&scnd_m);
     return 0;
 }

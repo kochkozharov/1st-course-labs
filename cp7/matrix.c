@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <assert.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#define NDEBUG
+#include <assert.h>
 
 #include "matrix.h"
+
 
 #define DEBUG   printf("M "); \
                 for (size_t i = 0; i < matrix->size1; ++i) printf("%ld ", matrix->m[i]); \
@@ -93,6 +95,7 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
         }
         matrix->size1 = size1;
         matrix->m=realloc(matrix->m, size1 * sizeof(size_t));
+        if (!matrix->m) abort();
         matrix->size2 = size2;
         return 0; 
     }
@@ -113,9 +116,19 @@ int matrixScan(FILE * const in, Matrix * const matrix) {
         errno = EINVAL;
         return -1;
     }
-    if (matrixResize(matrix, size1, size2) != 0)
+    if (matrixResize(matrix, size1, size2) != 0) {
+        errno = EINVAL;
         return -1;
-    return -1;
+    }
+    for (size_t i = 0; i < size1; ++i)
+        for (size_t j = 0; j < size2; ++j) {
+            long long value;
+            if (fscanf(in, "%lld", &value) != 1)
+                return -1;
+            if (value != 0)
+                matrixSet(matrix, i, j, value);
+        }
+    return 0;
 }
 
 int matrixDebugPrint(FILE *out, const Matrix *matrix) {
@@ -170,7 +183,9 @@ int matrixSet(
         prev_index = row_index; // сохраняем предыдущий эл-т
         row_index = matrix->a[row_index].next;
     }
+#ifndef NDEBUG
     printf("PREV COL IND %ld\n", prev_index);
+#endif
     if (row_index == -1) {  // по этим индексам 0
         if (value==0) { // зануляем ноль
             return 0;
@@ -181,8 +196,10 @@ int matrixSet(
             index_in_a = matrix->size-1;
             if (index_in_a == matrix->capacity) {
                 matrix->capacity = newCapacity(matrix->capacity);
+#ifndef NDEBUG
                 printf("new cap: %ld\n", matrix->capacity);
                 printf("%p\n", (void*) matrix->a);
+#endif
                 matrix->a = realloc(matrix->a, (matrix->capacity) * sizeof(_Elem));
                 if (!matrix->a) abort();
             }
@@ -195,12 +212,16 @@ int matrixSet(
         if (start_index == -1) { // строка была пустой
             matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = -1};
             matrix->m[index1] = index_in_a;
+#ifndef NDEBUG
             DEBUG
+#endif
             return 0;
         } // в строке были эл-ты
         matrix->a[index_in_a] = (_Elem) { .col = index2, .value = value, .next = matrix->a[prev_index].next};
         matrix->a[prev_index].next = index_in_a;
+#ifndef NDEBUG
         DEBUG
+#endif
         return 0;
     }
     if (value == 0) { // удаляем элемент      
@@ -215,11 +236,15 @@ int matrixSet(
         matrix->a[row_index].next = matrix->empty; // теперь некст показывает на следующий пустой! образуется цепочка пустых эл-тов.
         matrix->empty = row_index;
         matrix->a[matrix->empty].col=-1; //на всякий случай
+#ifndef NDEBUG
         DEBUG
+#endif
         return 0;
     }
     matrix->a[row_index].value = value; // заменяем значение
+#ifndef NDEBUG
     DEBUG
+#endif
     return 0;
 }
 
