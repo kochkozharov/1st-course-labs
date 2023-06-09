@@ -1,0 +1,46 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <stddef.h>
+
+
+
+typedef struct {
+    size_t col;
+    long long value;
+    ptrdiff_t next; //-1
+} _Elem;
+
+typedef struct {
+    ptrdiff_t *m; //-1
+    _Elem *a;
+    size_t size1, size2, count;
+} Matrix;
+
+void matrixClear(Matrix *matrix);
+
+void matrixCreate(Matrix *matrix);
+
+void matrixDestroy(Matrix *matrix);
+
+bool matrixIsSquare(const Matrix *matrix);
+
+int matrixDebugPrint(FILE *out, const Matrix *matrix);
+
+int matrixPrint(FILE *out, const Matrix *matrix);
+
+int matrixResize(Matrix *matrix, size_t size1, size_t size2);
+
+int matrixScan(FILE *in, Matrix *matrix);
+
+int matrixGet(const Matrix *matrix, size_t index1, size_t index2, long long *ptr);
+
+int matrixSet(Matrix *matrix, size_t index1, size_t index2, long long value);
+
+size_t matrixSize1(const Matrix *matrix);
+
+size_t matrixSize2(const Matrix *matrix);
+
+#endif //MATRIX_H
