@@ -30,7 +30,8 @@ int main(void) {
     matrixSet(&m, 1, 2, 666);
     matrixResize(&m,3,3);
     matrixDebugPrint(stdout, &m);
+    long long v;
+    matrixPrint(stdout,&m);
     matrixDestroy(&m);
-
     return 0;
 }

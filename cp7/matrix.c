@@ -138,8 +138,15 @@ int matrixDebugPrint(FILE *out, const Matrix *matrix) {
 }
 
 int matrixPrint(FILE *out, const Matrix *matrix) {
-    (void) out;
-    (void) matrix;
+    for (size_t  i = 0; i < matrix->size1; ++i) {
+        for (size_t j=0; j < matrix->size2; ++j) {
+            long long v;
+            matrixGet(matrix, i, j, &v);
+            if (fprintf(out, "\t%lld", v)  <  0 )
+                return -1;
+        }
+        fprintf(out, "\n");
+    }
     return 0;
 }
 
@@ -159,7 +166,7 @@ int matrixSet(
     ptrdiff_t start_index =  matrix->m[index1];
     ptrdiff_t row_index = start_index;
     ptrdiff_t prev_index = -1;
-    while ( matrix->a && row_index != -1 && matrix->a[row_index].col != (ptrdiff_t) index2 ) {
+    while ( matrix->a && row_index != -1 && (size_t) matrix->a[row_index].col != index2 ) {
         prev_index = row_index; // сохраняем предыдущий эл-т
         row_index = matrix->a[row_index].next;
     }
@@ -228,8 +235,18 @@ size_t matrixNonZeroCount(const Matrix *matrix) {
     return matrix->size - matrix->empty_count;
 }
 
-/*
 int matrixGet(const Matrix *matrix, size_t index1, size_t index2, long long *ptr) {
-
+    assert((matrix->size1 == 0) == (matrix->size2 == 0) &&
+        (matrix->size2 == 0 || matrix->size1 <= PTRDIFF_MAX / matrix->size2)
+    );
+    if (matrix->size1 <= index1 || matrix->size2 <= index2) {
+        errno = EINVAL;
+        return -1;
+    }
+    ptrdiff_t row_index = matrix->m[index1];
+    while ( matrix->a && row_index != -1 && (size_t) matrix->a[row_index].col != index2 ) {
+        row_index = matrix->a[row_index].next;
+    }
+    *ptr = row_index == -1 ? 0 : matrix->a[row_index].value;
+    return 0;
 }
-*/
