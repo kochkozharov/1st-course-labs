@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-
-
 typedef struct {
     ptrdiff_t col;
     long long value;
@@ -45,5 +43,7 @@ size_t matrixSize1(const Matrix *matrix);
 size_t matrixSize2(const Matrix *matrix);
 
 size_t matrixNonZeroCount(const Matrix *matrix);
+
+int matrixCrossDivide(Matrix *matrix, long long value);
 
 #endif //MATRIX_H

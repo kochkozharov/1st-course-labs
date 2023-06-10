@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <limits.h>
 #define NDEBUG
 #include <assert.h>
 
@@ -273,5 +274,74 @@ int matrixGet(const Matrix *matrix, size_t index1, size_t index2, long long *ptr
         row_index = matrix->a[row_index].next;
     }
     *ptr = row_index == -1 ? 0 : matrix->a[row_index].value;
+    return 0;
+}
+
+int matrixCrossDivide(Matrix *matrix, long long value) {
+    long long min_diff = LLONG_MAX;
+    long long lower;
+    bool has_lower = false;
+    long long upper;
+    bool has_upper = false;
+    long long exact;
+    bool has_exact = false;
+    for (size_t  i = 0; i < matrix->size1; ++i) {
+        for (size_t j=0; j < matrix->size2; ++j) {
+            long long el;
+            matrixGet(matrix, i, j, &el);
+            if (el == value) {
+                exact = el;
+                has_exact = true;
+                has_lower = has_upper = false;
+                goto jmp;
+            }
+            long long diff = llabs(el - value);
+            if (diff < min_diff) {
+                min_diff = diff;
+                if (el < value) {
+                    lower = el;
+                    has_lower = true;
+                }
+                else {
+                    upper = el;
+                    has_upper = true;
+                }
+            }
+        }
+    }
+    if (has_lower && has_upper) {
+        if (llabs(lower - value)  < llabs(upper - value)) {
+            has_upper = false;
+        }
+        else if (llabs(lower - upper) == 2*min_diff) {
+            has_upper = has_lower = true;
+        }
+        else {
+            has_lower = false;
+        }
+    }
+jmp:
+    for (size_t  i = 0; i < matrix->size1; ++i) {
+        for (size_t j=0; j < matrix->size2; ++j) {
+            long long el;
+            matrixGet(matrix, i, j, &el);
+            if ((has_exact && el==exact) || (has_lower && el == lower) || (has_upper && el == upper)) {
+                for (size_t s1 = 0; s1 < matrix->size1; ++s1) {
+                    if (s1 == i)
+                        continue;
+                    long long col_el;
+                    matrixGet(matrix, s1, j, &col_el);
+                    matrixSet(matrix, s1, j, col_el/el);
+                }
+                for (size_t s2 = 0; s2 < matrix->size2; ++s2) {
+                    if (s2 == j)
+                        continue;
+                    long long col_el;
+                    matrixGet(matrix, i, s2, &col_el);
+                    matrixSet(matrix, i, s2, col_el/el);
+                }
+            }
+        }
+    }
     return 0;
 }
