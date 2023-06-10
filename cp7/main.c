@@ -8,7 +8,11 @@ int main(void) {
     matrixResize(&m, 3, 4);
     matrixSet(&m, 0, 3, 343);
     matrixSet(&m, 0, 3, 344);
+    matrixSet(&m, 0, 2, 344);
+    matrixPrint(stdout, &m);
     matrixSet(&m, 0, 3, 0); //!!!
+    printf("\n");
+    matrixPrint(stdout, &m);
     matrixSet(&m, 0, 3, 343);
     matrixSet(&m, 1, 3, 6);
     matrixSet(&m, 0, 3, 0);
@@ -25,11 +29,16 @@ int main(void) {
     matrixSet(&m, 1, 3, -66);
     matrixSet(&m, 2, 0, -66);
     matrixSet(&m, 2, 2, -88);
+    printf("\n");
+    matrixPrint(stdout,&m);
+    printf("\n");
     matrixResize(&m, 2, 3);
+    printf("Resized matrix:\n");
     matrixDebugPrint(stdout, &m);
     matrixPrint(stdout,&m);
-    matrixResize(&m, 3,2); //!!!!!!
-    printf("Modified matrix:\n");
+    matrixSet(&m, 1, 2, 666);
+    matrixResize(&m, 3, 2); //!!!!!!
+    printf("Resized matrix:\n");
     matrixDebugPrint(stdout, &m);
     matrixPrint(stdout,&m);
     matrixDestroy(&m);

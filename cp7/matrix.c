@@ -71,7 +71,8 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
     }
     if (matrix->size1 > size1 || matrix->size2 > size2) {
         for (size_t i = 0; i < size1; ++i) {
-            ptrdiff_t row_index =  matrix->m[i];
+            ptrdiff_t start_index = matrix->m[i];
+            ptrdiff_t row_index = start_index;
             ptrdiff_t prev_index = -1;
             while (  row_index != -1 ) {
                 ptrdiff_t next = matrix->a[row_index].next;
@@ -83,6 +84,8 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
                     if (prev_index != -1) {
                         matrix->a[prev_index].next = next;
                     }
+                    if (start_index == row_index)
+                        matrix->m[i] = next;
                 }
                 else {
                     prev_index = row_index;
