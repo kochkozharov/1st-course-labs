@@ -94,11 +94,6 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
                 row_index = next;
             }
         }
-        matrix->size1 = size1;
-        matrix->m=realloc(matrix->m, size1 * sizeof(size_t));
-        if (!matrix->m) abort();
-        matrix->size2 = size2;
-        return 0; 
     }
     size_t old_size1 = matrix->size1;
     matrix->size1 = size1;

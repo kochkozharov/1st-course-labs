@@ -26,9 +26,11 @@ int main(void) {
     matrixSet(&m, 2, 0, -66);
     matrixSet(&m, 2, 2, -88);
     matrixResize(&m, 2, 3);
-    matrixSet(&m, 1, 2, 666);
+    matrixDebugPrint(stdout, &m);
+    matrixPrint(stdout,&m);
+    matrixSet(&m, 1, 1, 666);
+    matrixResize(&m, 3,2); //!!!!!!
     printf("Modified matrix:\n");
-    matrixResize(&m,3,3);
     matrixDebugPrint(stdout, &m);
     matrixPrint(stdout,&m);
     matrixDestroy(&m);
