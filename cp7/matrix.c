@@ -62,13 +62,20 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
         errno = EINVAL;
         return -1;
     }
+    if (matrix->size1 < size1) {
+        matrix->m = realloc(matrix->m, size1 * sizeof(size_t));
+        if (!matrix->m) abort();
+        for (size_t i=matrix->size1; i < size1; ++i) {
+            matrix->m[i] = -1;
+        }
+    }
     if (matrix->size1 > size1 || matrix->size2 > size2) {
         for (size_t i = 0; i < size1; ++i) {
             ptrdiff_t row_index =  matrix->m[i];
             ptrdiff_t prev_index = -1;
             while (  row_index != -1 ) {
                 ptrdiff_t next = matrix->a[row_index].next;
-                if ( (size_t) matrix->a[row_index].col >= size2) {
+                if ( (size_t) matrix->a[row_index].col >=  size2) {
                     matrix->a[row_index].col = -1;
                     matrix->a[row_index].next = matrix->empty;
                     matrix->empty = row_index;
@@ -95,14 +102,12 @@ int matrixResize(Matrix *matrix, size_t size1, size_t size2) {
             }
         }
     }
-    size_t old_size1 = matrix->size1;
+    if (matrix->size1 > size1) {
+        matrix->m = realloc(matrix->m, size1 * sizeof(size_t));
+        if (!matrix->m) abort();
+    }
     matrix->size1 = size1;
     matrix->size2 = size2;
-    matrix->m = realloc(matrix->m, size1 * sizeof(size_t));
-    if (!matrix->m) abort();
-    for (size_t i=old_size1; i < matrix->size1; ++i) {
-        matrix->m[i] = -1;
-    }
     return 0;
 }
 
