@@ -20,8 +20,33 @@ double exampleDict (const char * var) {
     }
 }
 
+static char *inputString(FILE* fp){
+    size_t size = 16;
+    char *str;
+    int ch;
+    size_t len = 0;
+    str = malloc(size);
+    if (!str) return str;
+    while((ch=fgetc(fp)) != '\n'){
+        if (ch == EOF) {
+            if (len==0) {
+                free(str);
+                return NULL;
+            }
+            else break;
+        };
+        str[len++]=ch;
+        if(len==size) {
+            str = realloc(str, size*=2);
+            if (!str) return str;
+        }
+    }
+    str[len++]='\0';
+    return realloc(str, len);
+}
+
 int main(void) {
-    char *expr = "(2 ^ (2  + 1)) ^ (3+4)" ;
+    char *expr = inputString(stdin);
     fprintf(stdout, "%s\n", expr);
     fprintf(stdout, "----------------------\n");
     printPostfixFromInfix(stdout, expr);

@@ -284,7 +284,7 @@ static Node *nodeDeepCopy(Node * const node) {
     Node *new_node = malloc(sizeof(Node));
     if (!new_node) abort(); 
     memcpy(new_node, node, sizeof(Node));
-    if (node->nodeType != OPERATOR) {
+    if (node && node->nodeType != OPERATOR) {
         return new_node;
     }
     new_node->nodeUnion.op.left = nodeDeepCopy(node->nodeUnion.op.left);
