@@ -9,27 +9,26 @@
 #include "expr_tree.h"
 #include "stack.h"
 
-double eval_pow(double a1, double a2) { return pow(a1, a2); }
-double eval_add(double a1, double a2) { return a1+a2; }
-double eval_sub(double a1, double a2) { return a1-a2; }
-double eval_exp(double a1, double a2) { return a2<0 ? 0 : (a2==0?1:a1*eval_exp(a1, a2-1)); }
-double eval_mul(double a1, double a2) { return a1*a2; }
-double eval_div(double a1, double a2) {
+enum {ASSOC_LEFT, ASSOC_RIGHT};
+
+static double eval_pow(double a1, double a2) { return pow(a1, a2); }
+static double eval_add(double a1, double a2) { return a1+a2; }
+static double eval_sub(double a1, double a2) { return a1-a2; }
+static double eval_mul(double a1, double a2) { return a1*a2; }
+static double eval_div(double a1, double a2) {
   if(!a2) {
     fprintf(stderr, "ERROR: Division by zero\n");
     exit(EXIT_FAILURE);
   }
   return a1/a2;
 }
-double eval_mod(double a1, double a2) {
+static double eval_mod(double a1, double a2) {
   if(!a2) {
     fprintf(stderr, "ERROR: Division by zero\n");
     exit(EXIT_FAILURE);
   }
   return fmodf(a1, a2);
 }
-
-enum {ASSOC_LEFT, ASSOC_RIGHT};
 
 typedef struct {
   char op;
@@ -87,7 +86,7 @@ void fromInfix(
         }
         else if (expr[i] == ')') {
             while (!stackIsEmpty(&stack) &&  stackTop(&stack) !=  '(') {
-                NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .op = stackTop(&stack)} };
+                NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .opChar = stackTop(&stack)} };
                 NodeType node_type = OPERATOR;
                 consume(&node_union, node_type, context);
                 stackPopBack(&stack);
@@ -102,7 +101,7 @@ void fromInfix(
             while (!stackIsEmpty(&stack) && (getOpType(stackTop(&stack)).prec > getOpType(expr[i]).prec || 
                   (getOpType(stackTop(&stack)).prec == getOpType(expr[i]).prec &&
                   getOpType(expr[i]).assoc == ASSOC_LEFT))) {
-                NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .op = stackTop(&stack)} };
+                NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .opChar = stackTop(&stack)} };
                 NodeType node_type = OPERATOR;
                 consume(&node_union, node_type, context);
                 stackPopBack(&stack);
@@ -141,10 +140,92 @@ void fromInfix(
         ++i;
     }
     while (!stackIsEmpty(&stack)) {
-        NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .op = stackTop(&stack)} };
-        NodeType node_type = OPERATOR;
-        consume(&node_union, node_type, context);
+        if (stackTop(&stack) != '(') {
+            NodeUnion node_union = { .op = { .left = NULL, .right = NULL, .opChar = stackTop(&stack)} };
+            NodeType node_type = OPERATOR;
+            consume(&node_union, node_type, context);
+        }
         stackPopBack(&stack);
     }
     stackDestroy(&stack);
+}
+
+static void consumeToStream(const NodeUnion * node_union, NodeType node_type, void * context) {
+    if (node_type == VALUE) {
+        fprintf((FILE *) context, "%f ", node_union->value);
+    }
+    if (node_type == VARIABLE) {
+        fprintf((FILE *) context, "%s ", node_union->variable);
+    }
+    if (node_type == OPERATOR) {
+        fprintf((FILE *) context, "%c ", node_union->op.opChar);
+    }
+}
+
+void printPostfixFromInfix(const char *expr) {
+    fromInfix(expr, consumeToStream, stdout);
+    fprintf(stdout, "\n");
+}
+
+static void consumeToTree(
+    const NodeUnion *node_union,
+    NodeType node_type,
+    void * const ptr
+) {
+    Context * const context = (Context *) ptr;
+    Node *node = malloc(sizeof(Node));
+    node->nodeUnion = *node_union;
+    node->nodeType = node_type;
+    if (node->nodeType == OPERATOR) {
+        OpType op_type = getOpType(node->nodeUnion.op.opChar);
+        node->nodeUnion.op.left = context->nodes[--context->size];
+        node->nodeUnion.op.left->parent = node;
+        if (!op_type.unary) {
+            node->nodeUnion.op.right = context->nodes[--context->size];
+            node->nodeUnion.op.right->parent = node;
+        }
+    }
+    context->nodes[context->size++] = node;
+}
+
+void treeCreateFromInfix(Tree * const tree, const char *expr) {
+    Context context = {.size = 0};
+    fromInfix(expr, consumeToTree, &context);
+    tree->root = context.size != 0 ? context.nodes[0] : NULL;
+}
+
+static void postorderDestroy(Node *node) {
+    if (node->nodeType == OPERATOR) {
+        postorderDestroy(node->nodeUnion.op.left);
+        postorderDestroy(node->nodeUnion.op.right);
+    }
+    free(node);
+}
+
+void treeDestroy(Tree * const tree) {
+    Node *node = tree->root;
+    postorderDestroy(node);
+}
+
+static void inorderPrint(Node * const node, FILE *file, size_t _depth) {
+    if (node->nodeType == OPERATOR) {
+        inorderPrint(node->nodeUnion.op.left, file, _depth+1);
+        for (size_t i=0; i < _depth; ++i) {
+            fprintf(file, " ");
+        }
+        fprintf(file, "%c\n", node->nodeUnion.op.opChar);
+        inorderPrint(node->nodeUnion.op.right, file, _depth+1);
+    }
+    else {
+        for (size_t i=0; i < _depth; ++i) {
+            fprintf(file, " ");
+        }
+        if (node->nodeType == VALUE) fprintf(file, "%f\n", node->nodeUnion.value);
+        else fprintf(file, "%s\n", node->nodeUnion.variable);
+    }
+}
+
+void treeInorderPrint(Tree * const tree, FILE *file) {
+    Node *node = tree->root;
+    inorderPrint(node, file, 0);
 }

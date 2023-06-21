@@ -184,14 +184,14 @@ def postfix_to_tree(postfix: list) -> Tree:
                 stack.append((node, False))
     return Tree(root)
 
-def parse_identifier(expr: str, i: int) -> tuple(str, int):
+def parse_identifier(expr: str, i: int) -> tuple[str, int]:
     n, token = len(expr), []
     while i < n and expr[i].isalpha():
         token.append(expr[i])
         i += 1
     return ''.join(token), i
 
-def parse_number(expr: str, i: int) -> tuple(float, int): # strtod in C
+def parse_number(expr: str, i: int) -> tuple[float, int]: # strtod in C
     n, dot, token = len(expr), False, []
     while i < n and (expr[i].isdecimal() or expr[i] == '.' and not dot):
         dot = dot or expr[i] == '.'
@@ -249,6 +249,7 @@ assert tree.to_postfix() == postfix
 str_tree = 'Tree(Node(Node(Node(0), +, Node(1)), *, Node(Node(2), -, Node(3))))'
 assert str(tree) == str_tree
 assert str(infix_to_tree('(0 + 1) * (2 - 3)')) == str_tree
+print(infix_to_postfix('100 + (101 * 102 - 103'))
 # на оценку 4 и 5: возведение в степень (обратите внимание, что оно право-ассоциативное)
 # на оценку 5: унарный минус, например
 # -5 + 2 * 3
