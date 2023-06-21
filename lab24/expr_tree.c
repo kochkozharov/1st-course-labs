@@ -5,14 +5,21 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "expr_tree.h"
 #include "stack.h"
+
 
 typedef struct {
     Node *nodes[NODES_LENGTH];
     size_t size;
 } Context;
+
+typedef struct {
+    double nums[NODES_LENGTH];
+    size_t size;
+} CalcContext;
 
 enum {ASSOC_LEFT, ASSOC_RIGHT};
 
@@ -219,8 +226,7 @@ void treeDestroy(Tree * const tree) {
     }
 }
 
-static void inorderPrint(FILE *file, Node * const node,  size_t _depth) {
-    
+static void inorderPrint(FILE *file, const Node * const node,  size_t _depth) {
     if (node->nodeType == OPERATOR) {
         inorderPrint(file, node->nodeUnion.op.left,  _depth+1);
         for (size_t i=0; i < _depth; ++i) {
@@ -238,13 +244,43 @@ static void inorderPrint(FILE *file, Node * const node,  size_t _depth) {
     }
 }
 
-void treeInorderPrint(FILE *file, Tree * const tree) {
+void treeInorderPrint(FILE *file, const Tree * const tree) {
     Node *node = tree->root;
     if (node != NULL) {
         inorderPrint(file, node, 0);
     }
 }
 
-void tree_transform(Tree * const tree) {
+
+
+static void postorderCalculate(const Node * const node, void * const ptr, double (*dict)(const char *)) {
+    CalcContext * const context = (CalcContext *) ptr;
+    if (node->nodeType == OPERATOR) {
+        postorderCalculate(node->nodeUnion.op.left, context, dict);
+        postorderCalculate(node->nodeUnion.op.right, context, dict);
+        OpType op_type = getOpType(node->nodeUnion.op.opChar);
+        double x = context->nums[--context->size];
+        double y = context->nums[--context->size];
+        context->nums[context->size++]=op_type.eval(x, y);
+    }
+    else if (node->nodeType == VALUE) {
+        context->nums[context->size++] = node->nodeUnion.value;
+    }
+    else {
+        context->nums[context->size++] = dict(node->nodeUnion.variable);
+    }
+}
+
+double treeCalculate(const Tree * const tree, double (*dict)(const char *)) {
+    
+    CalcContext calc_context = {.size = 0};
+    Node *node = tree->root;
+    assert(node != NULL);
+    postorderCalculate(node, &calc_context, dict);
+    assert(calc_context.size == 1);
+    return calc_context.nums[0];
+}
+
+void treeTransform(Tree * const tree) {
     (void) tree;
 }

@@ -38,12 +38,14 @@ typedef struct {
 
 void printPostfixFromInfix(FILE *file, const char *expr);
 
-void treeCreateFromInfix(Tree * const tree, const char *expr);
+void treeCreateFromInfix(Tree * tree, const char *expr);
 
-void treeDestroy(Tree * const tree);
+void treeDestroy(Tree * tree);
 
-void treeInorderPrint(FILE *file, Tree * const tree);
+void treeInorderPrint(FILE *file, const Tree *  tree);
 
-void tree_transform(Tree * const tree);
+void treeTransform(Tree * tree);
+
+double treeCalculate(const Tree * tree, double (*dict)(const char *));
 
 #endif //EXPR_TREE_H
