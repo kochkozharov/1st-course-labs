@@ -21,10 +21,8 @@ double exampleDict (const char * var) {
 }
 
 int main(void) {
-    //char *expr = "(2 ^ (2  + 1)) ^ (3+4)" ;
-    char *expr = "2 ^ (3+4)" ;
-    fprintf(stdout, expr);
-    fprintf(stdout,"\n");
+    char *expr = "(2 ^ (2  + 1)) ^ (3+4)" ;
+    fprintf(stdout, "%s\n", expr);
     fprintf(stdout, "----------------------\n");
     printPostfixFromInfix(stdout, expr);
     fprintf(stdout, "----------------------\n");
