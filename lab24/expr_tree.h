@@ -44,8 +44,8 @@ void treeDestroy(Tree * tree);
 
 void treeInorderPrint(FILE *file, const Tree *  tree);
 
-void treeTransform(Tree * tree);
-
 double treeCalculate(const Tree * tree, double (*dict)(const char *));
+
+void treeTransform(Tree * tree);
 
 #endif //EXPR_TREE_H

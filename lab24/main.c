@@ -8,10 +8,10 @@ double exampleDict (const char * var) {
     if (strcmp(var, "a") == 0) {
         return 6;
     }
-    else if (strcmp(var, "c") == 0) {
+    else if (strcmp(var, "b") == 0) {
         return 7;
     }
-    else if (strcmp(var, "c")) {
+    else if (strcmp(var, "c") == 0) {
         return 8;
     }
     else {
@@ -21,7 +21,8 @@ double exampleDict (const char * var) {
 }
 
 int main(void) {
-    char *expr = "100 + (101 * 102) - 103" ;
+    //char *expr = "(2 ^ (2  + 1)) ^ (3+4)" ;
+    char *expr = "2 ^ (3+4)" ;
     fprintf(stdout, expr);
     fprintf(stdout,"\n");
     fprintf(stdout, "----------------------\n");
@@ -32,6 +33,12 @@ int main(void) {
     treeInorderPrint(stdout, &tree);
     fprintf(stdout, "----------------------\n");
     double res = treeCalculate(&tree, exampleDict);
+    fprintf(stdout, "Calculated: %f\n", res);
+    fprintf(stdout, "----------------------\n");
+    treeTransform(&tree);
+    treeInorderPrint(stdout, &tree);
+    fprintf(stdout, "----------------------\n");
+    res = treeCalculate(&tree, exampleDict);
     fprintf(stdout, "Calculated: %f\n", res);
     treeDestroy(&tree);
 }

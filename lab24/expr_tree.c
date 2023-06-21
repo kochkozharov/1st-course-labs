@@ -188,16 +188,18 @@ static void consumeToTree(
 ) {
     Context * const context = (Context *) ptr;
     Node *node = malloc(sizeof(Node));
+    if (!node) abort();
     node->nodeUnion = *node_union;
     node->nodeType = node_type;
     if (node->nodeType == OPERATOR) {
         OpType op_type = getOpType(node->nodeUnion.op.opChar);
-        node->nodeUnion.op.left = context->nodes[--context->size];
-        node->nodeUnion.op.left->parent = node;
         if (!op_type.unary) {
             node->nodeUnion.op.right = context->nodes[--context->size];
             node->nodeUnion.op.right->parent = node;
         }
+        node->nodeUnion.op.left = context->nodes[--context->size];
+        node->nodeUnion.op.left->parent = node;
+
     }
     context->nodes[context->size++] = node;
 }
@@ -211,7 +213,7 @@ void treeCreateFromInfix(Tree * const tree, const char *expr) {
     tree->root = context.size != 0 ? context.nodes[0] : NULL;
 }
 
-static void postorderDestroy(Node *node) {
+static void postorderDestroy(Node * const node) {
     if (node->nodeType == OPERATOR) {
         postorderDestroy(node->nodeUnion.op.left);
         postorderDestroy(node->nodeUnion.op.right);
@@ -228,12 +230,12 @@ void treeDestroy(Tree * const tree) {
 
 static void inorderPrint(FILE *file, const Node * const node,  size_t _depth) {
     if (node->nodeType == OPERATOR) {
-        inorderPrint(file, node->nodeUnion.op.left,  _depth+1);
+        inorderPrint(file, node->nodeUnion.op.right,  _depth+1);
         for (size_t i=0; i < _depth; ++i) {
             fprintf(file, " ");
         }
         fprintf(file, "%c\n", node->nodeUnion.op.opChar);
-        inorderPrint(file, node->nodeUnion.op.right,  _depth+1);
+        inorderPrint(file, node->nodeUnion.op.left,  _depth+1);
     }
     else {
         for (size_t i=0; i < _depth; ++i) {
@@ -251,16 +253,14 @@ void treeInorderPrint(FILE *file, const Tree * const tree) {
     }
 }
 
-
-
 static void postorderCalculate(const Node * const node, void * const ptr, double (*dict)(const char *)) {
     CalcContext * const context = (CalcContext *) ptr;
     if (node->nodeType == OPERATOR) {
         postorderCalculate(node->nodeUnion.op.left, context, dict);
         postorderCalculate(node->nodeUnion.op.right, context, dict);
         OpType op_type = getOpType(node->nodeUnion.op.opChar);
-        double x = context->nums[--context->size];
         double y = context->nums[--context->size];
+        double x = context->nums[--context->size];
         context->nums[context->size++]=op_type.eval(x, y);
     }
     else if (node->nodeType == VALUE) {
@@ -272,7 +272,6 @@ static void postorderCalculate(const Node * const node, void * const ptr, double
 }
 
 double treeCalculate(const Tree * const tree, double (*dict)(const char *)) {
-    
     CalcContext calc_context = {.size = 0};
     Node *node = tree->root;
     assert(node != NULL);
@@ -281,6 +280,44 @@ double treeCalculate(const Tree * const tree, double (*dict)(const char *)) {
     return calc_context.nums[0];
 }
 
+static Node *nodeDeepCopy(Node * const node) {
+    Node *new_node = malloc(sizeof(Node));
+    if (!new_node) abort(); 
+    memcpy(new_node, node, sizeof(Node));
+    if (node->nodeType != OPERATOR) {
+        return new_node;
+    }
+    new_node->nodeUnion.op.left = nodeDeepCopy(node->nodeUnion.op.left);
+    new_node->nodeUnion.op.right = nodeDeepCopy(node->nodeUnion.op.right);
+    return new_node;
+}
+
+static void preorderTransform(Node *const node) {
+    if (node->nodeType == OPERATOR) {
+        if (node->nodeUnion.op.opChar == '^' && 
+            node->nodeUnion.op.right->nodeType == OPERATOR &&
+            node->nodeUnion.op.right->nodeUnion.op.opChar == '+') {
+
+            node->nodeUnion.op.opChar = '*';
+            Node *left_arg = node->nodeUnion.op.left; //
+            Node *right_arg = node->nodeUnion.op.right; // +
+            Node *left_node = malloc(sizeof(Node));
+            left_node->nodeType = OPERATOR;
+            left_node->nodeUnion.op.opChar = '^';
+            left_node->nodeUnion.op.left = left_arg;
+            left_node->nodeUnion.op.right = right_arg->nodeUnion.op.left;
+            
+            node->nodeUnion.op.left = left_node;
+
+            right_arg->nodeUnion.op.opChar = '^';
+            right_arg->nodeUnion.op.left = nodeDeepCopy(left_arg); //!!!
+        }
+        preorderTransform(node->nodeUnion.op.left);
+        preorderTransform(node->nodeUnion.op.right);
+    }
+}
+
 void treeTransform(Tree * const tree) {
-    (void) tree;
+    Node *node = tree->root;
+    preorderTransform(node);
 }
