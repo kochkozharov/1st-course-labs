@@ -47,6 +47,7 @@ static char *inputString(FILE* fp){
 
 int main(void) {
     char *expr = inputString(stdin);
+    if (!expr) abort();
     fprintf(stdout, "%s\n", expr);
     fprintf(stdout, "----------------------\n");
     printPostfixFromInfix(stdout, expr);

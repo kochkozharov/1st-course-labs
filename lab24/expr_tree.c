@@ -302,6 +302,7 @@ static void preorderTransform(Node *const node) {
             Node *left_arg = node->nodeUnion.op.left; //
             Node *right_arg = node->nodeUnion.op.right; // +
             Node *left_node = malloc(sizeof(Node));
+            if (!left_node) abort();
             left_node->nodeType = OPERATOR;
             left_node->nodeUnion.op.opChar = '^';
             left_node->nodeUnion.op.left = left_arg;
