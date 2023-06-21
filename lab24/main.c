@@ -53,11 +53,13 @@ int main(void) {
     fprintf(stdout, "----------------------\n");
     Tree tree;
     treeCreateFromInfix(&tree, expr);
+    free(expr);
     treeInorderPrint(stdout, &tree);
     fprintf(stdout, "----------------------\n");
     double res = treeCalculate(&tree, exampleDict);
     fprintf(stdout, "Calculated: %f\n", res);
     fprintf(stdout, "----------------------\n");
+    fprintf(stdout, "Transformation:\n");
     treeTransform(&tree);
     treeInorderPrint(stdout, &tree);
     fprintf(stdout, "----------------------\n");
