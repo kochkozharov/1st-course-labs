@@ -36,23 +36,14 @@ typedef struct {
     Node *root;
 } Tree;
 
-typedef struct {
-    Node *nodes[NODES_LENGTH];
-    size_t size;
-} Context;
-
-void fromInfix(
-    const char *expr,
-    void (*consume)(const NodeUnion *, NodeType, void *),
-    void *context
-);
-
-void printPostfixFromInfix(const char *expr);
+void printPostfixFromInfix(FILE *file, const char *expr);
 
 void treeCreateFromInfix(Tree * const tree, const char *expr);
 
 void treeDestroy(Tree * const tree);
 
-void treeInorderPrint(Tree * const tree, FILE *file);
+void treeInorderPrint(FILE *file, Tree * const tree);
+
+void tree_transform(Tree * const tree);
 
 #endif //EXPR_TREE_H

@@ -9,6 +9,11 @@
 #include "expr_tree.h"
 #include "stack.h"
 
+typedef struct {
+    Node *nodes[NODES_LENGTH];
+    size_t size;
+} Context;
+
 enum {ASSOC_LEFT, ASSOC_RIGHT};
 
 static double eval_pow(double a1, double a2) { return pow(a1, a2); }
@@ -67,7 +72,7 @@ static bool isOp(char c) {
     return c == '^' || c == '*' || c == '/' || c == '%' || c == '+' || c == '-';
 }
 
-void fromInfix(
+static void fromInfix(
     const char *expr,
     void (*consume)(const NodeUnion *, NodeType, void *), // (const *consume)
     void *context
@@ -147,7 +152,9 @@ void fromInfix(
         }
         stackPopBack(&stack);
     }
+
     stackDestroy(&stack);
+
 }
 
 static void consumeToStream(const NodeUnion * node_union, NodeType node_type, void * context) {
@@ -162,9 +169,9 @@ static void consumeToStream(const NodeUnion * node_union, NodeType node_type, vo
     }
 }
 
-void printPostfixFromInfix(const char *expr) {
-    fromInfix(expr, consumeToStream, stdout);
-    fprintf(stdout, "\n");
+void printPostfixFromInfix(FILE *file, const char *expr) {
+    fromInfix(expr, consumeToStream, file);
+    fprintf(file, "\n");
 }
 
 static void consumeToTree(
@@ -189,8 +196,11 @@ static void consumeToTree(
 }
 
 void treeCreateFromInfix(Tree * const tree, const char *expr) {
+    
     Context context = {.size = 0};
+
     fromInfix(expr, consumeToTree, &context);
+
     tree->root = context.size != 0 ? context.nodes[0] : NULL;
 }
 
@@ -204,17 +214,20 @@ static void postorderDestroy(Node *node) {
 
 void treeDestroy(Tree * const tree) {
     Node *node = tree->root;
-    postorderDestroy(node);
+    if (node != NULL) {
+        postorderDestroy(node);
+    }
 }
 
-static void inorderPrint(Node * const node, FILE *file, size_t _depth) {
+static void inorderPrint(FILE *file, Node * const node,  size_t _depth) {
+    
     if (node->nodeType == OPERATOR) {
-        inorderPrint(node->nodeUnion.op.left, file, _depth+1);
+        inorderPrint(file, node->nodeUnion.op.left,  _depth+1);
         for (size_t i=0; i < _depth; ++i) {
             fprintf(file, " ");
         }
         fprintf(file, "%c\n", node->nodeUnion.op.opChar);
-        inorderPrint(node->nodeUnion.op.right, file, _depth+1);
+        inorderPrint(file, node->nodeUnion.op.right,  _depth+1);
     }
     else {
         for (size_t i=0; i < _depth; ++i) {
@@ -225,7 +238,13 @@ static void inorderPrint(Node * const node, FILE *file, size_t _depth) {
     }
 }
 
-void treeInorderPrint(Tree * const tree, FILE *file) {
+void treeInorderPrint(FILE *file, Tree * const tree) {
     Node *node = tree->root;
-    inorderPrint(node, file, 0);
+    if (node != NULL) {
+        inorderPrint(file, node, 0);
+    }
+}
+
+void tree_transform(Tree * const tree) {
+    (void) tree;
 }

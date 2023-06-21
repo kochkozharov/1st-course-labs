@@ -3,10 +3,13 @@
 #include "expr_tree.h"
 
 int main(void) {
-    printPostfixFromInfix("100 + (101 * 102 - 103");
+    char *expr = "(0 + 1) * (2 - 3)" ;
+    fprintf(stdout, expr);
+    fprintf(stdout,"\n");
+    printPostfixFromInfix(stdout, expr);
+
     Tree tree;
-    treeCreateFromInfix(&tree, "100 + (101 * 102 - 103");
-    treeInorderPrint(&tree, stdout);
+    treeCreateFromInfix(&tree, expr);
+    treeInorderPrint(stdout, &tree);
     treeDestroy(&tree);
 }
-
