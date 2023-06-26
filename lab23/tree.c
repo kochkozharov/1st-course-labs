@@ -217,6 +217,7 @@ void tree_print_inorder(const tree * const tree) {
             node = node->left;
         }
     }
+    stack_destroy(&st);
 }
 
 
