@@ -1,5 +1,4 @@
 #include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <stdint.h>
@@ -299,7 +298,7 @@ int matrixCrossDivide(Matrix *matrix, long long value) {
                 goto jmp;
             }
             long long diff = llabs(el - value);
-            if (diff < min_diff) {
+            if (diff <= min_diff) {
                 min_diff = diff;
                 if (el < value) {
                     lower = el;
