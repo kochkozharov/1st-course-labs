@@ -20,11 +20,7 @@ typedef union {
     double value;
 } NodeUnion;
 
-typedef enum {
-    OPERATOR,
-    VALUE,
-    VARIABLE
-} NodeType;
+typedef enum { OPERATOR, VALUE, VARIABLE } NodeType;
 
 struct Node {
     Node *parent;
@@ -38,14 +34,14 @@ typedef struct {
 
 void printPostfixFromInfix(FILE *file, const char *expr);
 
-void treeCreateFromInfix(Tree * tree, const char *expr);
+void treeCreateFromInfix(Tree *tree, const char *expr);
 
-void treeDestroy(Tree * tree);
+void treeDestroy(Tree *tree);
 
-void treeInorderPrint(FILE *file, const Tree *  tree);
+void treeInorderPrint(FILE *file, const Tree *tree);
 
-double treeCalculate(const Tree * tree, double (*dict)(const char *));
+double treeCalculate(const Tree *tree, double (*dict)(const char *));
 
-void treeTransform(Tree * tree);
+void treeTransform(Tree *tree);
 
-#endif //EXPR_TREE_H
+#endif  // EXPR_TREE_H

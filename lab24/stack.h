@@ -13,7 +13,7 @@ typedef struct {
     size_t capacity, depth;
 } Stack;
 
-StackElem stackTop(const Stack * const stack);
+StackElem stackTop(const Stack *const stack);
 
 int stackTopSafe(const Stack *stack, StackElem *value);
 
@@ -35,4 +35,4 @@ size_t stackDepth(const Stack *stack);
 
 void stackDestroy(Stack *stack);
 
-#endif // STACK_H
+#endif  // STACK_H
