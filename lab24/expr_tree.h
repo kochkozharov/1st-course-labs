@@ -23,7 +23,7 @@ typedef union {
 typedef enum { OPERATOR, VALUE, VARIABLE } NodeType;
 
 struct Node {
-    Node *parent;
+    //Node *parent;
     NodeUnion nodeUnion;
     NodeType nodeType;
 };
@@ -42,6 +42,6 @@ void treeInorderPrint(FILE *file, const Tree *tree);
 
 double treeCalculate(const Tree *tree, double (*dict)(const char *));
 
-void treeTransform(Tree *tree);
+void treeTransform(Tree *tree, double (*dict)(const char *));
 
 #endif  // EXPR_TREE_H

@@ -61,7 +61,7 @@ int main(void) {
     fprintf(stdout, "Calculated: %f\n", res);
     fprintf(stdout, "----------------------\n");
     fprintf(stdout, "Transformation:\n");
-    treeTransform(&tree);
+    treeTransform(&tree, exampleDict);
     treeInorderPrint(stdout, &tree);
     fprintf(stdout, "----------------------\n");
     res = treeCalculate(&tree, exampleDict);
