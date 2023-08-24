@@ -6,7 +6,7 @@
 
 double exampleDict(const char *var) {
     if (strcmp(var, "a") == 0) {
-        return 6;
+        return 0;
     } else if (strcmp(var, "b") == 0) {
         return 7;
     } else if (strcmp(var, "c") == 0) {

@@ -214,10 +214,10 @@ static void consumeToTree(const NodeUnion *node_union, NodeType node_type,
         OpType op_type = getOpType(node->nodeUnion.op.opChar);
         if (!op_type.unary) {
             node->nodeUnion.op.right = context->nodes[--context->size];
-            //node->nodeUnion.op.right->parent = node;
+            // node->nodeUnion.op.right->parent = node;
         }
         node->nodeUnion.op.left = context->nodes[--context->size];
-        //node->nodeUnion.op.left->parent = node;
+        // node->nodeUnion.op.left->parent = node;
     }
     context->nodes[context->size++] = node;
 }
@@ -314,23 +314,24 @@ static void postorderTransform(Node *const node, double (*dict)(const char *)) {
     if (node->nodeType == OPERATOR) {
         postorderTransform(node->nodeUnion.op.left, dict);
         postorderTransform(node->nodeUnion.op.right, dict);
-    }
-    Operator cur = node->nodeUnion.op;
-    if ((cur.opChar == '+') && ((cur.left->nodeType == VALUE &&
-            cur.left->nodeUnion.value == 0) ||
-        (cur.left->nodeType == VARIABLE &&
-            dict(cur.left->nodeUnion.variable) == 0)) ) {
-        *node = *cur.right;
-        free(cur.right);
-        free(cur.left);
-    }
-    else if ((cur.opChar == '+' || cur.opChar == '-') && ((cur.right->nodeType == VALUE &&
-            cur.right->nodeUnion.value == 0) ||
-        (cur.right->nodeType == VARIABLE &&
-            dict(cur.right->nodeUnion.variable) == 0)) ) {
-        *node = *cur.left;
-        free(cur.left);
-        free(cur.right);
+
+        Operator cur = node->nodeUnion.op;
+        if ((cur.opChar == '+') &&
+            ((cur.left->nodeType == VALUE && cur.left->nodeUnion.value == 0) ||
+             (cur.left->nodeType == VARIABLE &&
+              dict(cur.left->nodeUnion.variable) == 0))) {
+            *node = *cur.right;
+            free(cur.right);
+            free(cur.left);
+        } else if ((cur.opChar == '+' || cur.opChar == '-') &&
+                   ((cur.right->nodeType == VALUE &&
+                     cur.right->nodeUnion.value == 0) ||
+                    (cur.right->nodeType == VARIABLE &&
+                     dict(cur.right->nodeUnion.variable) == 0))) {
+            *node = *cur.left;
+            free(cur.left);
+            free(cur.right);
+        }
     }
 }
 

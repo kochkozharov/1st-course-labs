@@ -23,7 +23,7 @@ typedef union {
 typedef enum { OPERATOR, VALUE, VARIABLE } NodeType;
 
 struct Node {
-    //Node *parent;
+    // Node *parent;
     NodeUnion nodeUnion;
     NodeType nodeType;
 };
