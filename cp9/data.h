@@ -8,7 +8,7 @@ typedef struct {
     char value[];
 } Data;
 
-int cmpData(const void * const a, const void * const b);
-int cmpStrWithData(const void * const a, const void * const b);
+int cmpData(const void* const a, const void* const b);
+int cmpStrWithData(const void* const a, const void* const b);
 
-#endif //DATA_H
+#endif  // DATA_H

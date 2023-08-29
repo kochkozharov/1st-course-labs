@@ -1,34 +1,26 @@
+#include "utils.h"
+
+#include <errno.h>
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <errno.h>
-#include "utils.h"
 
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
-static inline void *ptrOffset(
-    const void * const ptr,
-    const ptrdiff_t idx,
-    const size_t size
-) {
-    return (char *) ptr + idx * size;
+static inline void *ptrOffset(const void *const ptr, const ptrdiff_t idx,
+                              const size_t size) {
+    return (char *)ptr + idx * size;
 }
 
-static inline void *ptrIncrement(
-    const void * const ptr,
-    const size_t size
-) {
+static inline void *ptrIncrement(const void *const ptr, const size_t size) {
     return ptrOffset(ptr, 1, size);
 }
 
-static inline void *elemAt(
-    const void * const ptr,
-    const size_t idx,
-    const size_t size
-) {
-    return ptrOffset(ptr, (ptrdiff_t) idx, size);
+static inline void *elemAt(const void *const ptr, const size_t idx,
+                           const size_t size) {
+    return ptrOffset(ptr, (ptrdiff_t)idx, size);
 }
 /*
 bool binarySearch(
@@ -53,17 +45,13 @@ bool binarySearch(
     return false;
 }
 */
-void *binarySearch(
-    const void * const key,
-    const void *array,
-    size_t length,
-    const size_t size,
-    int (* const compare)(const void *, const void *)
-) {
-    void *end=elemAt(array,length,size);
+void *binarySearch(const void *const key, const void *array, size_t length,
+                   const size_t size,
+                   int (*const compare)(const void *, const void *)) {
+    void *end = elemAt(array, length, size);
     while (length != 0U) {
         const size_t index = length >> 1U;
-        void * const middle = elemAt(array, index, size);
+        void *const middle = elemAt(array, index, size);
         const int result = compare(key, middle);
         if (result <= 0)
             length = index;
@@ -72,34 +60,27 @@ void *binarySearch(
             length -= index + 1U;
         }
     }
-    if (array!=end && compare(key,array)==0) return (void*)array;
+    if (array != end && compare(key, array) == 0) return (void *)array;
     return NULL;
 }
 
-void reverse(
-    const void *array,
-    size_t length,
-    const size_t size
-) {
-    for (size_t i = 0 ; i < length>>1; ++i) {
+void reverse(const void *array, size_t length, const size_t size) {
+    for (size_t i = 0; i < length >> 1; ++i) {
         void *temp = malloc(size);
-        memcpy(temp,elemAt(array, i, size),size);
-        memcpy(elemAt(array, i, size),elemAt(array, length-i-1, size),size);
-        memcpy(elemAt(array, length-i-1, size),temp,size);
+        memcpy(temp, elemAt(array, i, size), size);
+        memcpy(elemAt(array, i, size), elemAt(array, length - i - 1, size),
+               size);
+        memcpy(elemAt(array, length - i - 1, size), temp, size);
         free(temp);
     }
 }
 
-void *lowerBound(
-    const void * const key,
-    const void *array,
-    size_t length,
-    const size_t size,
-    int (* const compare)(const void *, const void *)
-) {
+void *lowerBound(const void *const key, const void *array, size_t length,
+                 const size_t size,
+                 int (*const compare)(const void *, const void *)) {
     while (length != 0U) {
         const size_t index = length >> 1U;
-        void * const middle = elemAt(array, index, size);
+        void *const middle = elemAt(array, index, size);
         const int result = compare(key, middle);
         if (result <= 0)
             length = index;
@@ -108,95 +89,83 @@ void *lowerBound(
             length -= index + 1U;
         }
     }
-    return (void *) array;
+    return (void *)array;
 }
 
-void *upperBound(
-    const void * const key,
-    const void *array,
-    size_t length,
-    const size_t size,
-    int (* const compare)(const void *, const void *)
-) {
+void *upperBound(const void *const key, const void *array, size_t length,
+                 const size_t size,
+                 int (*const compare)(const void *, const void *)) {
     while (length != 0U) {
         const size_t index = length >> 1U;
-        void * const middle = elemAt(array, index, size);
+        void *const middle = elemAt(array, index, size);
         const int result = compare(key, middle);
         if (result >= 0) {
             array = ptrIncrement(middle, size);
             length -= index + 1U;
-        }
-        else 
+        } else
             length = index;
     }
-    return (void *) array;
+    return (void *)array;
 }
 
-static int merge(
-    void *a,
-    const size_t left,
-    const size_t mid,
-    const size_t right,
-    const size_t size,
-    int (* const comp)(const void *, const void *)
-) {
-    size_t it1=0;
-    size_t it2=0;
+static int merge(void *a, const size_t left, const size_t mid,
+                 const size_t right, const size_t size,
+                 int (*const comp)(const void *, const void *)) {
+    size_t it1 = 0;
+    size_t it2 = 0;
     void *result = malloc((right - left) * size);
     if (!result) {
         return errno;
     }
 
-    while (left+it1 < mid && mid+it2 < right) {
-        if (comp(elemAt(a,left+it1,size),elemAt(a,mid+it2,size))<=0) {
-            memcpy(elemAt(result,it1+it2,size),elemAt(a,left+it1,size),size);
+    while (left + it1 < mid && mid + it2 < right) {
+        if (comp(elemAt(a, left + it1, size), elemAt(a, mid + it2, size)) <=
+            0) {
+            memcpy(elemAt(result, it1 + it2, size), elemAt(a, left + it1, size),
+                   size);
             ++it1;
-        }
-        else {
-            memcpy(elemAt(result,it1+it2,size),elemAt(a,mid+it2,size),size);
+        } else {
+            memcpy(elemAt(result, it1 + it2, size), elemAt(a, mid + it2, size),
+                   size);
             ++it2;
         }
     }
-    while (left+it1<mid) {
-        memcpy(elemAt(result,it1+it2,size),elemAt(a,left+it1,size),size);
+    while (left + it1 < mid) {
+        memcpy(elemAt(result, it1 + it2, size), elemAt(a, left + it1, size),
+               size);
         ++it1;
     }
-    while (mid+it2<right) {
-        memcpy(elemAt(result,it1+it2,size),elemAt(a,mid+it2,size),size);
+    while (mid + it2 < right) {
+        memcpy(elemAt(result, it1 + it2, size), elemAt(a, mid + it2, size),
+               size);
         ++it2;
     }
-    for (size_t i = 0; i < it1+it2; ++i) {
-        memcpy(elemAt(a,left+i,size),elemAt(result,i,size),size);
+    for (size_t i = 0; i < it1 + it2; ++i) {
+        memcpy(elemAt(a, left + i, size), elemAt(result, i, size), size);
     }
 
     free(result);
     return 0;
 }
 
-int mergeSort(
-    void *a,
-    const size_t count,
-    const size_t size, 
-    int (*comp) (const void *, const void *)
-) {
-    for (size_t i = 1; i < count; i*=2) {
-        for (size_t j = 0; j < count-i; j += 2*i) {
-            if(merge(a,j,j+i, MIN(j+2*i, count),size,comp)) return errno;
+int mergeSort(void *a, const size_t count, const size_t size,
+              int (*comp)(const void *, const void *)) {
+    for (size_t i = 1; i < count; i *= 2) {
+        for (size_t j = 0; j < count - i; j += 2 * i) {
+            if (merge(a, j, j + i, MIN(j + 2 * i, count), size, comp))
+                return errno;
         }
     }
     return 0;
 }
 
-
-Pair equalRange(
-    const void * const key,
-    const void *array,
-    size_t length,
-    const size_t size,
-    int (* const compare)(const void *, const void *)
-) {
-    void *first = lowerBound(key,array,length,size,compare);
-    void *second = upperBound(key,first,length-(((char*)first-(char*)array)/size),size,compare);
+Pair equalRange(const void *const key, const void *array, size_t length,
+                const size_t size,
+                int (*const compare)(const void *, const void *)) {
+    void *first = lowerBound(key, array, length, size, compare);
+    void *second = upperBound(key, first,
+                              length - (((char *)first - (char *)array) / size),
+                              size, compare);
     return (Pair){.first = first, .second = second};
 }
 /*

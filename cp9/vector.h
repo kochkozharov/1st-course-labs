@@ -3,9 +3,10 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+
 #include "data.h"
 
-typedef Data * T;
+typedef Data *T;
 
 typedef struct {
     T *data;
@@ -26,4 +27,4 @@ size_t vectorSize(const Vector *vector);
 
 void vectorDestroy(Vector *vector);
 
-#endif // VECTOR_H
+#endif  // VECTOR_H
