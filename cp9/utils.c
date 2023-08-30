@@ -60,7 +60,7 @@ void *binarySearch(const void *const key, const void *array, size_t length,
             length -= index + 1U;
         }
     }
-    if (array != end && compare(key, array) == 0) return (void *)array;
+    if (array != end && compare(key, array) == 0) return (void *) array;
     return NULL;
 }
 

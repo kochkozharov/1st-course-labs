@@ -9,6 +9,6 @@ typedef struct {
 } Data;
 
 int cmpData(const void* const a, const void* const b);
-int cmpStrWithData(const void* const a, const void* const b);
+int cmpIntWithData(const void *const int_ptr, const void *const data_ptr);
 
 #endif  // DATA_H

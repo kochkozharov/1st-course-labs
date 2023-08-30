@@ -78,13 +78,16 @@ esc:
     };
     Data *table = vectorData(&vtable);
     size_t lines_count = vectorSize(&vtable);
-    for (size_t i = 0; i < lines_count; ++i) {
-        printf("%d %s\n", table[i].key, table[i].value);
-    }
+    for (size_t i = 0; i < lines_count; ++i)
+        printf("%-4d %s\n", table[i].key, table[i].value);
+    mergeSort(table, lines_count, sizeof(Data), cmpData);
+    printf("-------------------------------------\n");
+    for (size_t i = 0; i < lines_count; ++i)
+        printf("%-4d %s\n", table[i].key, table[i].value);
+    printf("-------------------------------------\n");
     /*
     printf("---------\n");
 #if (1)  // 1 is stable, 0 is unstable but faster in some cases
-    mergeSort(table, lines_count, sizeof(Data *), cmpData);
 #else
     int asc = 1, desc = 1;
     for (size_t i = 0; (asc == 1 || desc == 1) && i < lines_count - 1; ++i) {
@@ -105,23 +108,32 @@ esc:
         printf("%s %s\n", table[i].key, table[i].value);
     }
     printf("---------\n");
+    */
     for (;;) {
         char *str = inputString(stdin);
-        if (!str) break;
-        Data **res = binarySearch(&str, table, lines_count, sizeof(Data *),
-                                  cmpStrWithData);
+        if (feof(stdin)) {
+            free(str);
+            break;
+        };
+        char *endptr;
+        long num = strtol(str, &endptr, 10);
+        if (*endptr != '\0') {
+            fprintf(stderr, "Bad request.\n");
+            exit(EXIT_FAILURE);
+        }
+        free(str);
+        Data *res = binarySearch(&num, table, lines_count, sizeof(Data),
+                                  cmpIntWithData);
         if (!res)
             printf("N/A\n");
         else {
-            Data **end = table + lines_count;
-            while (res != end && cmpStrWithData(&str, res) == 0) {
-                printf("%s %s\n", (*res)->key, (*res)->value);
+            Data *end = table + lines_count;
+            while (res != end && cmpIntWithData(&num, res) == 0) {
+                printf("%-4d %s\n", res->key, res->value);
                 ++res;
             }
         }
-        free(str);
     }
-    */
     vectorDestroy(&vtable);
     return 0;
 }
