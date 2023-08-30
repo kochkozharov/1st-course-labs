@@ -1,20 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct {
     void *first;
     void *second;
 } Pair;
 
-bool simpleBinarySearch(
-    const void *const key,
-    const void *data,
-    size_t length,
-    const size_t size,
-    int (*const compare)(const void *, const void *));
+bool simpleBinarySearch(const void *const key, const void *data, size_t length,
+                        const size_t size, int (*const compare)(const void *, const void *));
 
 void *binarySearch(const void *key, const void *data, size_t length,
                    size_t size, int (*compare)(const void *, const void *));
@@ -32,8 +28,7 @@ int mergeSort(void *a, const size_t count, const size_t size,
 
 void reverse(const void *array, size_t length, const size_t size);
 
-Pair equalRange(const void *const key, const void *array, size_t length,
-                const size_t size,
+Pair equalRange(const void *const key, const void *array, size_t length, const size_t size,
                 int (*const compare)(const void *, const void *));
 
 #endif  // UTILS_H

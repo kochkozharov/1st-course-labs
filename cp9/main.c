@@ -95,7 +95,8 @@ esc:
         long num = strtol(str, &endptr, 10);
         if (*endptr != '\0') {
             fprintf(stderr, "Bad request.\n");
-            exit(EXIT_FAILURE);
+            free(str);
+            continue;
         }
         free(str);
         Data *res = binarySearch(&num, table, lines_count, sizeof(Data),
