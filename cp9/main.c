@@ -80,7 +80,7 @@ esc:
     size_t lines_count = vectorSize(&vtable);
     for (size_t i = 0; i < lines_count; ++i)
         printf("%-4d %s\n", table[i].key, table[i].value);
-    if (!mergeSort(table, lines_count, sizeof(Data), cmpData)) abort();
+    if (mergeSort(table, lines_count, sizeof(Data), cmpData)) abort();
     printf("-------------------------------------\n");
     for (size_t i = 0; i < lines_count; ++i)
         printf("%-4d %s\n", table[i].key, table[i].value);

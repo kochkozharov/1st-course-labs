@@ -148,7 +148,7 @@ static int merge(void *a, const size_t left, const size_t mid,
     free(result);
     return 0;
 }
-
+/*
 int mergeSort(void *a, const size_t count, const size_t size,
               int (*comp)(const void *, const void *)) {
     for (size_t i = 1; i < count; i *= 2) {
@@ -158,6 +158,21 @@ int mergeSort(void *a, const size_t count, const size_t size,
         }
     }
     return 0;
+}
+*/
+
+static int recMergeSort(void *a, const size_t count, const size_t size,
+              int (*comp)(const void *, const void *), const size_t left, const size_t right) {
+    if (left+1 >= right) return 0;
+    size_t mid = (left+right)/2;
+    recMergeSort(a, count, size, comp, left, mid);
+    recMergeSort(a, count, size, comp, mid, right);
+    return merge(a, left, mid, right, size, comp);
+}
+
+int mergeSort(void *a, const size_t count, const size_t size,
+              int (*comp)(const void *, const void *)) {
+    return recMergeSort(a, count, size, comp, 0, count);
 }
 
 Pair equalRange(const void *const key, const void *array, size_t length,

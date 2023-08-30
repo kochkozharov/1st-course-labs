@@ -2,11 +2,19 @@
 #define UTILS_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct {
     void *first;
     void *second;
 } Pair;
+
+bool simpleBinarySearch(
+    const void *const key,
+    const void *data,
+    size_t length,
+    const size_t size,
+    int (*const compare)(const void *, const void *));
 
 void *binarySearch(const void *key, const void *data, size_t length,
                    size_t size, int (*compare)(const void *, const void *));
