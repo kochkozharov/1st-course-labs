@@ -1,11 +1,11 @@
 #ifndef DATA_H
 #define DATA_H
 
-#define KEY_SIZE (6U)
+#define KEY_SIZE (4U)
 
 typedef struct {
-    char key[KEY_SIZE];
-    char value[];
+    int key;
+    char *value;
 } Data;
 
 int cmpData(const void* const a, const void* const b);

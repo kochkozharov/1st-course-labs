@@ -168,7 +168,3 @@ Pair equalRange(const void *const key, const void *array, size_t length,
                               size, compare);
     return (Pair){.first = first, .second = second};
 }
-/*
-Обязательно: equal_range, lower_bound, upper_bound
-Карма +1: сортирока бинарным деревом (АВЛ)
-*/

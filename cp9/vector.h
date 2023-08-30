@@ -6,7 +6,7 @@
 
 #include "data.h"
 
-typedef Data *T;
+typedef Data T;
 
 typedef struct {
     T *data;

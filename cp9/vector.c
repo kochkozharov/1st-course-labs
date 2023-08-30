@@ -18,7 +18,7 @@ T *vectorData(const Vector *const vector) { return vector->data; }
 
 void vectorDestroy(Vector *const vector) {
     for (size_t i = 0; i < vector->size; ++i) {
-        free(vector->data[i]);
+        free(vector->data[i].value);
     }
     free(vector->data);
 }

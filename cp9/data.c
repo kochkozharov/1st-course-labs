@@ -3,13 +3,12 @@
 #include <string.h>
 
 int cmpData(const void *const a, const void *const b) {
-    const char *x = (*(Data **)a)->key;
-    const char *y = (*(Data **)b)->key;
-    return strcmp(x, y);
+    const int x = (*(Data *)a).key;
+    const int y = (*(Data *)b).key;
+    return x < y;
 }
 
-int cmpStrWithData(const void *const a, const void *const b) {
-    const char *x = (*(char **)a);
-    const char *y = (*(Data **)b)->key;
-    return strcmp(x, y);
+int cmpIntWithData(int n, const void *const ptr) {
+    const int y = (*(Data *)ptr).key;
+    return n < y;
 }
