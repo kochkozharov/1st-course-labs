@@ -22,17 +22,17 @@ static inline void *elemAt(const void *const ptr, const size_t idx,
                            const size_t size) {
     return ptrOffset(ptr, (ptrdiff_t)idx, size);
 }
-/*
-bool binarySearch(
-    const void * const key,
+
+// определяет есть ли элемент
+bool simpleBinarySearch(
+    const void *const key,
     const void *data,
     size_t length,
     const size_t size,
-    int (* const compare)(const void *, const void *)
-) {
+    int (*const compare)(const void *, const void *)) {
     while (length != 0) {
         const size_t middle = length >> 1;
-        const void * const ptr = elemAt(data, middle, size);
+        const void *const ptr = elemAt(data, middle, size);
         const int cmp = compare(key, ptr);
         if (cmp < 0)
             length = middle;
@@ -44,7 +44,8 @@ bool binarySearch(
     }
     return false;
 }
-*/
+
+// возвращает указатель самое первое нахождение или NULL, если его нет (почти upperBound)
 void *binarySearch(const void *const key, const void *array, size_t length,
                    const size_t size,
                    int (*const compare)(const void *, const void *)) {
@@ -60,7 +61,7 @@ void *binarySearch(const void *const key, const void *array, size_t length,
             length -= index + 1U;
         }
     }
-    if (array != end && compare(key, array) == 0) return (void *) array;
+    if (array != end && compare(key, array) == 0) return (void *)array;
     return NULL;
 }
 

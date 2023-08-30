@@ -1,8 +1,8 @@
+#include <ctype.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 #include "data.h"
 #include "string.h"
@@ -52,7 +52,7 @@ int main(void) {
             }
             key_str[key_len++] = ch;
         }
-        if (key_len==0) {
+        if (key_len == 0) {
             fprintf(stderr, "Invalid key.\n");
             exit(EXIT_FAILURE);
         }
@@ -80,35 +80,11 @@ esc:
     size_t lines_count = vectorSize(&vtable);
     for (size_t i = 0; i < lines_count; ++i)
         printf("%-4d %s\n", table[i].key, table[i].value);
-    mergeSort(table, lines_count, sizeof(Data), cmpData);
+    if (!mergeSort(table, lines_count, sizeof(Data), cmpData)) abort();
     printf("-------------------------------------\n");
     for (size_t i = 0; i < lines_count; ++i)
         printf("%-4d %s\n", table[i].key, table[i].value);
     printf("-------------------------------------\n");
-    /*
-    printf("---------\n");
-#if (1)  // 1 is stable, 0 is unstable but faster in some cases
-#else
-    int asc = 1, desc = 1;
-    for (size_t i = 0; (asc == 1 || desc == 1) && i < lines_count - 1; ++i) {
-        if (cmpData(&table[i], &table[i + 1]) < 0)
-            desc = 0;
-        else if (cmpData(&table[i], &table[i + 1]) > 0)
-            asc = 0;
-    }
-
-    if (desc) {
-        reverse(table, lines_count, sizeof(Data *));
-    } else if (asc == 0 && desc == 0) {
-        mergeSort(table, lines_count, sizeof(Data *), cmpData);
-    }
-#endif
-
-    for (size_t i = 0; i < lines_count; ++i) {
-        printf("%s %s\n", table[i].key, table[i].value);
-    }
-    printf("---------\n");
-    */
     for (;;) {
         char *str = inputString(stdin);
         if (feof(stdin)) {
@@ -123,7 +99,7 @@ esc:
         }
         free(str);
         Data *res = binarySearch(&num, table, lines_count, sizeof(Data),
-                                  cmpIntWithData);
+                                 cmpIntWithData);
         if (!res)
             printf("N/A\n");
         else {
