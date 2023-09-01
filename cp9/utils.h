@@ -9,6 +9,8 @@ typedef struct {
     void *second;
 } Pair;
 
+
+//O(log(n))
 bool simpleBinarySearch(const void *const key, const void *data, size_t length,
                         const size_t size, int (*const compare)(const void *, const void *));
 

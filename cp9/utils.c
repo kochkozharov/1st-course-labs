@@ -45,7 +45,7 @@ bool simpleBinarySearch(
     return false;
 }
 
-// возвращает указатель самое первое нахождение или NULL, если его нет (почти upperBound)
+// возвращает указатель самое первое нахождение или NULL, если его нет (почти lowerBound)
 void *binarySearch(const void *const key, const void *array, size_t length,
                    const size_t size,
                    int (*const compare)(const void *, const void *)) {

@@ -9,7 +9,7 @@ int cmpData(const void *const a, const void *const b) {
 }
 
 int cmpIntWithData(const void *const int_ptr, const void *const data_ptr) {
-    const int x = (*(Data *)int_ptr).key;
+    const int x = *(int *)int_ptr;
     const int y = (*(Data *)data_ptr).key;
     return x - y;
 }
