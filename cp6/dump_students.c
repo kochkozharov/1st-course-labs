@@ -59,6 +59,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_SUCCESS);
     }
     Student st;
+    memset(&st, 0, sizeof st);
     FILE *out = fopen(argv[1], "ab");
     if (!out) {
         perror("fopen");
