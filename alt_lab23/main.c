@@ -1,9 +1,10 @@
+#include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <limits.h>
-#include "tree.h"
+
 #include "leaveslevel.h"
+#include "tree.h"
 
 int main() {
     Tree *t = NULL;
@@ -36,10 +37,10 @@ int main() {
                 break;
             }
             case 4: {
-                int deep = 0, curDeep = 0;
-                deep = max_level(t->root, deep);
-                if(task(t->root, curDeep, deep)) printf("Not on the same level\n");
-                else printf("On the same level\n");
+                if (task(t->root))
+                    printf("On the same level\n");
+                else
+                    printf("Not on the same level\n");
                 break;
             }
             case 5: {
@@ -59,7 +60,7 @@ int main() {
             }
         }
     }
-    delete(t->root);
+    delete (t->root);
     free(t);
     return 0;
 }

@@ -12,7 +12,6 @@ typedef struct {
     node *root;
 } Tree;
 
-
 node *create_node(float f, node *par);
 Tree *create_tree(float f);
 node *search_tree(node *t, float f);
@@ -21,4 +20,5 @@ void delete_node(Tree *tree, float f);
 void delete(node *t);
 void preOrder(node *t, int x);
 void postOrder(node *t);
+
 #endif
