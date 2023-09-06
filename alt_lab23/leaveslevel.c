@@ -18,7 +18,7 @@ static bool rec_task(node *t, int curDeep, int deep, bool *stop){ //Идея: Е
         *stop = true;
         return false;
     }
-    return rec_task(t->brother, curDeep, deep, stop) && rec_task(t->son, curDeep + 1, deep, stop); 
+    return rec_task(t->son, curDeep + 1, deep, stop) &&  rec_task(t->brother, curDeep, deep, stop); 
 }
 
 bool task(node *t) {
